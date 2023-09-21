@@ -14,7 +14,12 @@ extension PersistedCgmEvent {
     func treatment(enteredBy source: String) -> NightscoutTreatment? {
         switch type {
         case .sensorStart:
-            return NightscoutTreatment(timestamp: date, enteredBy: source, eventType: .sensorStart)
+            let note = "SensorID: \(deviceIdentifier)"
+            return NightscoutTreatment(timestamp: date, enteredBy: source, notes: note, eventType: .sensorStart)
+            // NS does not have a transmitter start type event yet
+//        case .transmitterStart:
+//            let note = "TransmitterID: \(deviceIdentifier)"
+//            return NightscoutTreatment(timestamp: date, enteredBy: source, notes: note, eventType: .transmitterStart)
         default:
             return nil
         }
