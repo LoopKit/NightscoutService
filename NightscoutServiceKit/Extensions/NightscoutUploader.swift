@@ -92,6 +92,27 @@ extension NightscoutClient {
         }
     }
 
+    func uploadCgmEvents(_ data: [PersistedCgmEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard !data.isEmpty else {
+            completion(.success(false))
+            return
+        }
+
+        let source = "loop://\(UIDevice.current.name)"
+
+        let treatments = data.compactMap { (event) -> NightscoutTreatment? in
+            return event.treatment(enteredBy: source)
+        }
+
+        self.upload(treatments) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success:
+                completion(.success(true))
+            }
+        }
+    }
 }
 
 extension NightscoutClient {

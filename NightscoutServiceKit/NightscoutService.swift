@@ -358,6 +358,16 @@ extension NightscoutService: RemoteDataService {
             }
         })
     }
+
+    public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard hasConfiguration, let uploader = uploader else {
+            completion(.success(true))
+            return
+        }
+
+        uploader.uploadCgmEvents(stored, completion: completion)
+    }
+
     
     public func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async throws {
         let commandSource = try commandSource(notification: notification)

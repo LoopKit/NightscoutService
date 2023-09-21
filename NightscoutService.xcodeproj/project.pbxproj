@@ -64,6 +64,7 @@
 		C10201552526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10201542526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift */; };
 		C1398D2027C41E3D00416AD6 /* ProfileSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1398D1F27C41E3D00416AD6 /* ProfileSet.swift */; };
 		C1398D2227C434FB00416AD6 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1398D2127C434FB00416AD6 /* Data.swift */; };
+		C1614F042AAFBA5600F636E5 /* PersistedCgmEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1614F032AAFBA5600F636E5 /* PersistedCgmEvent.swift */; };
 		C1B9ACF827DE987400857532 /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = C1B9ACF727DE987400857532 /* OneTimePassword */; };
 		C1C1349627DD35060097B5AD /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349527DD35060097B5AD /* LoopKit.framework */; };
 		C1C1349827DD35260097B5AD /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349727DD35260097B5AD /* LoopKitUI.framework */; };
@@ -216,6 +217,7 @@
 		C1398D2127C434FB00416AD6 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		C15A582E29C7866600D3A5A1 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C15A582F29C7866600D3A5A1 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C1614F032AAFBA5600F636E5 /* PersistedCgmEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedCgmEvent.swift; sourceTree = "<group>"; };
 		C1B9ACFF27DE9AD800857532 /* Crypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crypto.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1C1349527DD35060097B5AD /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1C1349727DD35260097B5AD /* LoopKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -304,6 +306,7 @@
 				A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */,
 				C1398D1F27C41E3D00416AD6 /* ProfileSet.swift */,
 				C1F7822727CD57A100C0919A /* OverrideTreament.swift */,
+				C1614F032AAFBA5600F636E5 /* PersistedCgmEvent.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -740,6 +743,7 @@
 			files = (
 				A9AA6E5B29EB072E008FFA78 /* OverrideAction.swift in Sources */,
 				A941B09129BD4A9E00F91340 /* BolusRemoteNotification.swift in Sources */,
+				C1614F042AAFBA5600F636E5 /* PersistedCgmEvent.swift in Sources */,
 				A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */,
 				A99A117829AA4D0A007919CE /* ExpirationValidator.swift in Sources */,
 				A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */,

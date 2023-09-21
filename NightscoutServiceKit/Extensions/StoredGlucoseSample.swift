@@ -21,8 +21,8 @@ extension StoredGlucoseSample {
 
         let deviceString: String
 
-        if let device = device, let manufacturer = device.manufacturer, let model = device.model, let software = device.softwareVersion {
-            deviceString = "loop://\(manufacturer)/\(model)/\(software)"
+        if let device = device, let localIdentifier = device.localIdentifier {
+            deviceString = localIdentifier
         } else {
             deviceString = "loop://\(UIDevice.current.name)"
         }
