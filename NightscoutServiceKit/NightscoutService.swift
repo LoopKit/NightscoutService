@@ -20,7 +20,7 @@ public enum NightscoutServiceError: Error {
 
 public final class NightscoutService: Service {
 
-    public static let pluginIdentifier = "NightscoutService"
+    public let pluginIdentifier = "NightscoutService"
 
     public static let localizedTitle = LocalizedString("Nightscout", comment: "The title of the Nightscout service")
     
