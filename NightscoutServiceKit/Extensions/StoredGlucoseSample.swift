@@ -21,8 +21,12 @@ extension StoredGlucoseSample {
 
         let deviceString: String
 
-        if let device = device, let manufacturer = device.manufacturer, let model = device.model, let software = device.softwareVersion {
-            deviceString = "loop://\(manufacturer)/\(model)/\(software)"
+        if let device = device, let manufacturer = device.manufacturer, let model = device.model, let name = device.name {
+            deviceString = "\(manufacturer) \(model) \(name)"
+        } else if let name = device?.name {
+            deviceString = "\(name)"
+        } else if !provenanceIdentifier.contains("loopkit.Loop") {
+            deviceString = provenanceIdentifier
         } else {
             deviceString = "loop://\(UIDevice.current.name)"
         }

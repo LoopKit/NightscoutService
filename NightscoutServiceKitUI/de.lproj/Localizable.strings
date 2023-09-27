@@ -2,7 +2,7 @@
 "API Secret" = "API Secret";
 
 /* No comment provided by engineer. */
-"Are you sure you want to reset the secret key?" = "Möchten Sie wirklich den geheimen Schlüssel zurücksetzen?";
+"Are you sure you want to reset the secret key?" = "Möchtest Du wirklich den geheimen Schlüssel zurücksetzen?";
 
 /* Button text to cancel Nightscout credential input */
 "Cancel" = "Abbrechen";

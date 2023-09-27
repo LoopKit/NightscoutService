@@ -326,6 +326,33 @@ extension NightscoutService: RemoteDataService {
     public var pumpEventDataLimit: Int? { return 1000 }
 
     public func uploadPumpEventData(_ stored: [PersistedPumpEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+
+        guard hasConfiguration, let uploader = uploader else {
+            completion(.success(true))
+            return
+        }
+
+        let source = "loop://\(UIDevice.current.name)"
+
+        let treatments = stored.compactMap { (event) -> NightscoutTreatment? in
+            // ignore doses; we'll get those via uploadDoseData
+            guard event.dose == nil else {
+                return nil
+            }
+            return event.treatment(source: source)
+        }
+
+        uploader.upload(treatments) { (result) in
+            switch result {
+            case .failure(let error):
+                self.log.error("Failed to upload pump events %{public}@: %{public}@", String(describing: treatments.map {$0.dictionaryRepresentation}), String(describing: error))
+                completion(.failure(error))
+            case .success:
+                self.log.debug("Uploaded overrides %@", String(describing: treatments.map {$0.dictionaryRepresentation}))
+                completion(.success(true))
+            }
+        }
+
         completion(.success(false))
     }
 
@@ -360,6 +387,16 @@ extension NightscoutService: RemoteDataService {
             }
         })
     }
+
+    public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard hasConfiguration, let uploader = uploader else {
+            completion(.success(true))
+            return
+        }
+
+        uploader.uploadCgmEvents(stored, completion: completion)
+    }
+
     
     public func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async throws {
         let commandSource = try commandSource(notification: notification)

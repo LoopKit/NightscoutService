@@ -41,7 +41,7 @@
 "One-Time Password" = "Одноразовый пароль";
 
 /* The default placeholder for required text */
-"Required" = "обязательный";
+"Required" = "Обязательный";
 
 /* No comment provided by engineer. */
 "Reset Secret Key" = "Сброс секретного ключа";
