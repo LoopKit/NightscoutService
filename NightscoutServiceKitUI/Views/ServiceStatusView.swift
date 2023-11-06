@@ -59,14 +59,21 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
             Button(action: {
                 viewModel.didLogout?()
             } ) {
-                Text("Logout").padding(.top, 20)
-            }
+                Text("Logout")
+            }.actionButtonStyle(.destructive)
         }
         .padding([.leading, .trailing])
         .navigationBarTitle("")
+        .navigationBarItems(leading: backButton)
         .navigationBarItems(trailing: dismissButton)
     }
     
+    private var backButton: some View {
+        Button(action: dismiss) {
+            Text("Back").bold()
+        }
+    }
+
     private var dismissButton: some View {
         Button(action: dismiss) {
             Text("Done").bold()
