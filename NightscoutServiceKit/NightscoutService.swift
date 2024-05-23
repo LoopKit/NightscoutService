@@ -153,10 +153,8 @@ public final class NightscoutService: Service {
 }
 
 extension NightscoutService: RemoteDataService {
-
-    public func uploadTemporaryOverrideData(updated: [LoopKit.TemporaryScheduleOverride], deleted: [LoopKit.TemporaryScheduleOverride], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadTemporaryOverrideData(updated: [LoopKit.TemporaryScheduleOverride], deleted: [LoopKit.TemporaryScheduleOverride]) async throws {
         guard let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
@@ -164,118 +162,120 @@ extension NightscoutService: RemoteDataService {
 
         let deletions = deleted.map { $0.syncIdentifier.uuidString }
 
-        uploader.deleteTreatmentsById(deletions, completionHandler: { (error) in
-            if let error = error {
-                self.log.error("Overrides deletions failed to delete %{public}@: %{public}@", String(describing: deletions), String(describing: error))
-            } else {
-                if deletions.count > 0 {
-                    self.log.debug("Deleted ids: %@", deletions)
-                }
-                uploader.upload(updates) { (result) in
-                    switch result {
-                    case .failure(let error):
-                        self.log.error("Failed to upload overrides %{public}@: %{public}@", String(describing: updates.map {$0.dictionaryRepresentation}), String(describing: error))
-                        completion(.failure(error))
-                    case .success:
-                        self.log.debug("Uploaded overrides %@", String(describing: updates.map {$0.dictionaryRepresentation}))
-                        completion(.success(true))
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.deleteTreatmentsById(deletions, completionHandler: { (error) in
+                if let error = error {
+                    self.log.error("Overrides deletions failed to delete %{public}@: %{public}@", String(describing: deletions), String(describing: error))
+                } else {
+                    if deletions.count > 0 {
+                        self.log.debug("Deleted ids: %@", deletions)
+                    }
+                    uploader.upload(updates) { (result) in
+                        switch result {
+                        case .failure(let error):
+                            self.log.error("Failed to upload overrides %{public}@: %{public}@", String(describing: updates.map {$0.dictionaryRepresentation}), String(describing: error))
+                            continuation.resume(throwing: error)
+                        case .success:
+                            self.log.debug("Uploaded overrides %@", String(describing: updates.map {$0.dictionaryRepresentation}))
+                            continuation.resume()
+                        }
                     }
                 }
-            }
+            })
         })
     }
 
 
     public var alertDataLimit: Int? { return 1000 }
 
-    public func uploadAlertData(_ stored: [SyncAlertObject], completion: @escaping (Result<Bool, Error>) -> Void) {
-        completion(.success(false))
+    public func uploadAlertData(_ stored: [SyncAlertObject]) async throws {
     }
 
     public var carbDataLimit: Int? { return 1000 }
 
-    public func uploadCarbData(created: [SyncCarbObject], updated: [SyncCarbObject], deleted: [SyncCarbObject], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadCarbData(created: [SyncCarbObject], updated: [SyncCarbObject], deleted: [SyncCarbObject]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
         
-        uploader.createCarbData(created) { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let createdObjectIds):
-                let createdUploaded = !created.isEmpty
-                let syncIdentifiers = created.map { $0.syncIdentifier }
-                for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
-                    if let syncIdentifier = syncIdentifier {
-                        self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.createCarbData(created) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let createdObjectIds):
+                    let createdUploaded = !created.isEmpty
+                    let syncIdentifiers = created.map { $0.syncIdentifier }
+                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
+                        if let syncIdentifier = syncIdentifier {
+                            self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
+                        }
                     }
-                }
-                self.stateDelegate?.pluginDidUpdateState(self)
-                
-                uploader.updateCarbData(updated, usingObjectIdCache: self.objectIdCache) { result in
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                    case .success(let updatedUploaded):
-                        uploader.deleteCarbData(deleted, usingObjectIdCache: self.objectIdCache) { result in
-                            switch result {
-                            case .failure(let error):
-                                completion(.failure(error))
-                            case .success(let deletedUploaded):
-                                self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
-                                self.stateDelegate?.pluginDidUpdateState(self)
-                                completion(.success(createdUploaded || updatedUploaded || deletedUploaded))
+                    self.stateDelegate?.pluginDidUpdateState(self)
+
+                    uploader.updateCarbData(updated, usingObjectIdCache: self.objectIdCache) { result in
+                        switch result {
+                        case .failure(let error):
+                            continuation.resume(throwing: error)
+                        case .success(let updatedUploaded):
+                            uploader.deleteCarbData(deleted, usingObjectIdCache: self.objectIdCache) { result in
+                                switch result {
+                                case .failure(let error):
+                                    continuation.resume(throwing: error)
+                                case .success(let deletedUploaded):
+                                    self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
+                                    self.stateDelegate?.pluginDidUpdateState(self)
+                                    continuation.resume()
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+        })
     }
 
     public var doseDataLimit: Int? { return 1000 }
 
-    public func uploadDoseData(created: [DoseEntry], deleted: [DoseEntry], completion: @escaping (_ result: Result<Bool, Error>) -> Void) {
+    public func uploadDoseData(created: [DoseEntry], deleted: [DoseEntry]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
-        uploader.createDoses(created, usingObjectIdCache: self.objectIdCache) { (result) in
-            switch (result) {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let createdObjectIds):
-                let createdUploaded = !created.isEmpty
-                let syncIdentifiers = created.map { $0.syncIdentifier }
-                for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
-                    if let syncIdentifier = syncIdentifier {
-                        self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.createDoses(created, usingObjectIdCache: self.objectIdCache) { (result) in
+                switch (result) {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let createdObjectIds):
+                    let createdUploaded = !created.isEmpty
+                    let syncIdentifiers = created.map { $0.syncIdentifier }
+                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
+                        if let syncIdentifier = syncIdentifier {
+                            self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
+                        }
                     }
-                }
-                self.stateDelegate?.pluginDidUpdateState(self)
+                    self.stateDelegate?.pluginDidUpdateState(self)
 
-                uploader.deleteDoses(deleted.filter { !$0.isMutable }, usingObjectIdCache: self.objectIdCache) { result in
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                    case .success(let deletedUploaded):
-                        self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
-                        self.stateDelegate?.pluginDidUpdateState(self)
-                        completion(.success(createdUploaded || deletedUploaded))
+                    uploader.deleteDoses(deleted.filter { !$0.isMutable }, usingObjectIdCache: self.objectIdCache) { result in
+                        switch result {
+                        case .failure(let error):
+                            continuation.resume(throwing: error)
+                        case .success(let deletedUploaded):
+                            self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
+                            self.stateDelegate?.pluginDidUpdateState(self)
+                            continuation.resume()
+                        }
                     }
                 }
             }
-        }
+        })
     }
 
     public var dosingDecisionDataLimit: Int? { return 50 }  // Each can be up to 20K bytes of serialized JSON, target ~1M or less
 
-    public func uploadDosingDecisionData(_ stored: [StoredDosingDecision], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadDosingDecisionData(_ stored: [StoredDosingDecision]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
@@ -297,42 +297,50 @@ extension NightscoutService: RemoteDataService {
         }
 
         guard statuses.count > 0 else {
-            completion(.success(false))
             return
         }
 
-        uploader.uploadDeviceStatuses(statuses) { result in
-            switch result {
-            case .success:
-                self.lastDosingDecisionForAutomaticDose = nil
-            default:
-                break
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.uploadDeviceStatuses(statuses) { result in
+                switch result {
+                case .success:
+                    self.lastDosingDecisionForAutomaticDose = nil
+                default:
+                    break
+                }
+                continuation.resume()
             }
-            completion(result)
-        }
+        })
     }
 
     public var glucoseDataLimit: Int? { return 1000 }
 
-    public func uploadGlucoseData(_ stored: [StoredGlucoseSample], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadGlucoseData(_ stored: [StoredGlucoseSample]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
-        uploader.uploadGlucoseSamples(stored, completion: completion)
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.uploadGlucoseSamples(stored) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        })
     }
 
     public var pumpEventDataLimit: Int? { return 1000 }
 
-    public func uploadPumpEventData(_ stored: [PersistedPumpEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadPumpEventData(_ stored: [PersistedPumpEvent]) async throws {
 
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
-        let source = "loop://\(UIDevice.current.name)"
+        let source = "loop://\(await UIDevice.current.name)"
 
         let treatments = stored.compactMap { (event) -> NightscoutTreatment? in
             // ignore doses; we'll get those via uploadDoseData
@@ -342,29 +350,37 @@ extension NightscoutService: RemoteDataService {
             return event.treatment(source: source)
         }
 
-        uploader.upload(treatments) { (result) in
-            switch result {
-            case .failure(let error):
-                self.log.error("Failed to upload pump events %{public}@: %{public}@", String(describing: treatments.map {$0.dictionaryRepresentation}), String(describing: error))
-                completion(.failure(error))
-            case .success:
-                self.log.debug("Uploaded overrides %@", String(describing: treatments.map {$0.dictionaryRepresentation}))
-                completion(.success(true))
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.upload(treatments) { (result) in
+                switch result {
+                case .failure(let error):
+                    self.log.error("Failed to upload pump events %{public}@: %{public}@", String(describing: treatments.map {$0.dictionaryRepresentation}), String(describing: error))
+                    continuation.resume(throwing: error)
+                case .success:
+                    self.log.debug("Uploaded overrides %@", String(describing: treatments.map {$0.dictionaryRepresentation}))
+                    continuation.resume()
+                }
             }
-        }
-
-        completion(.success(false))
+        })
     }
 
     public var settingsDataLimit: Int? { return 400 }  // Each can be up to 2.5K bytes of serialized JSON, target ~1M or less
 
-    public func uploadSettingsData(_ stored: [StoredSettings], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadSettingsData(_ stored: [StoredSettings]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
-        uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.uploadProfiles(stored.compactMap { $0.profileSet }) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        })
     }
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
@@ -388,13 +404,21 @@ extension NightscoutService: RemoteDataService {
         })
     }
 
-    public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent]) async throws {
         guard hasConfiguration, let uploader = uploader else {
-            completion(.success(true))
             return
         }
 
-        uploader.uploadCgmEvents(stored, completion: completion)
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.uploadCgmEvents(stored) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        })
     }
 
     
@@ -407,6 +431,9 @@ extension NightscoutService: RemoteDataService {
         return commandSourceV1
     }
 
+    public func uploadDeviceLogs(_ stored: [StoredDeviceLogEntry], startTime: Date, endTime: Date) async throws {
+        // TODO
+    }
 }
 
 extension NightscoutService: RemoteCommandSourceV1Delegate {
