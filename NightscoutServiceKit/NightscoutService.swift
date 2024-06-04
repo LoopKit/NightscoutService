@@ -30,6 +30,8 @@ public final class NightscoutService: Service {
     
     public weak var stateDelegate: StatefulPluggableDelegate?
 
+    public weak var remoteDataServiceDelegate: RemoteDataServiceDelegate?
+
     public var siteURL: URL?
 
     public var apiSecret: String?
@@ -431,9 +433,6 @@ extension NightscoutService: RemoteDataService {
         return commandSourceV1
     }
 
-    public func uploadDeviceLogs(_ stored: [StoredDeviceLogEntry], startTime: Date, endTime: Date) async throws {
-        // TODO
-    }
 }
 
 extension NightscoutService: RemoteCommandSourceV1Delegate {
