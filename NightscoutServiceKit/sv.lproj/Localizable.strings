@@ -1,14 +1,40 @@
+/* The remote action name for Bolus Entry */
+"Bolus Entry" = "Bolusinmatning";
+
+/* The remote action name for Cancel Override */
+"Cancel Override" = "Avbryt Override";
+
+/* The remote action name for Carb Entry */
+"Carb Entry" = "Kolhydratinmatning";
+
 /* Name of custom override */
 "Custom Override" = "Anpassad Override";
 
+/* Remote command error description: expired. */
+"Expired" = "Utgången";
+
+/* The remote action abbreviation for gram units */
+"g" = "g";
+
+/* Remote command error description: Missing OTP. */
+"Missing OTP" = "Saknar engångskod";
+
 /* The title of the Nightscout service */
 "Nightscout" = "Nightscout";
+
+/* The remote action name for Override */
+"Override" = "Override";
 
 /* Name of pre-meal workout override
    Name uploaded to Nightscout for Pre-Meal override */
 "Pre-Meal" = "Före måltid";
 
+/* The remote action abbreviation for bolus units */
+"U" = "E";
+
+/* The prefix for the remote unhandled notification error. (1: notification payload) */
+"Unhandled Notification: %1$@" = "Ohanterad avisering: %1$@";
+
 /* Name of legacy workout override
    Name uploaded to Nightscout for legacy workout override */
 "Workout" = "Träning";
-

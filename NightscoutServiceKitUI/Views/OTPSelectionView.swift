@@ -32,8 +32,8 @@ struct OTPSelectionView: View {
         }, label: {
             Image(systemName: "arrow.clockwise").imageScale(.large)
         }).alert(isPresented: $showingAlert) {
-            Alert(title: Text("Reset Secret Key"),
-                  message: Text("Are you sure you want to reset the secret key?"),
+            Alert(title: Text(LocalizedString("Reset Secret Key", comment: "Dialog title to reset secret key")),
+                  message: Text(LocalizedString("Are you sure you want to reset the secret key?", comment: "Dialog text before resetting secret key")),
                   primaryButton: .default(Text("OK"), action: {
                     otpViewModel.resetSecretKey()
                   }),

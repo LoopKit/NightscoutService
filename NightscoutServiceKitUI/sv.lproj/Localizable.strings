@@ -1,5 +1,5 @@
-/* The title of the Nightscout API secret */
-"API Secret" = "API Secret";
+/* Dialog text before resetting secret key */
+"Are you sure you want to reset the secret key?" = "Är du säker på att du vill återställa den hemliga nyckeln?";
 
 /* Button text to cancel Nightscout credential input */
 "Cancel" = "Avbryt";
@@ -7,22 +7,16 @@
 /* Description of ServiceStatus of checking */
 "Checking..." = "Kontrollerar...";
 
-/* Button title to delete a service */
-"Delete Service" = "Ta bort tjänst";
-
-/* No comment provided by engineer. */
-"Done" = "Färdig";
-
-/* The placeholder text for the Nightscout site URL */
-"https://mysite.herokuapp.com" = "https://mysite.herokuapp.com";
+/* Done button in service status view */
+"Done" = "Klar";
 
 /* Button text to login on Nightscout CredentialsView */
 "Login" = "Logga in";
 
-/* No comment provided by engineer. */
+/* Logout button in service status view */
 "Logout" = "Logga ut";
 
-/* No comment provided by engineer. */
+/* Title of service status view */
 "Nightscout" = "Nightscout";
 
 /* Title on Nightscout CredentialsView */
@@ -34,15 +28,14 @@
 /* Description of ServiceStatus of checking */
 "OK" = "OK";
 
-/* The default placeholder for required text */
-"Required" = "Krävs";
+/* One-Time Password row header in service status view */
+"One-Time Password" = "Engångskod";
 
-/* The title of the Nightscout site URL */
-"Site URL" = "Nightscout-URL";
+/* Dialog title to reset secret key */
+"Reset Secret Key" = "Återställ hemlig nyckel";
 
-/* No comment provided by engineer. */
+/* Status row header in service status view */
 "Status" = "Status";
 
-/* No comment provided by engineer. */
+/* URL row header in service status view */
 "URL" = "URL";
-
