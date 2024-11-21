@@ -6,13 +6,13 @@
 //  Copyright © 2019 LoopKit Authors. All rights reserved.
 //
 
-import HealthKit
+import LoopAlgorithm
 import LoopKit
 import NightscoutKit
 
 extension LoopKit.TemporaryScheduleOverride {
 
-    func nsScheduleOverride(for unit: HKUnit) -> NightscoutKit.TemporaryScheduleOverride {
+    func nsScheduleOverride(for unit: LoopUnit) -> NightscoutKit.TemporaryScheduleOverride {
         let nsTargetRange: ClosedRange<Double>?
         if let targetRange = settings.targetRange {
             nsTargetRange = ClosedRange(uncheckedBounds: (
@@ -68,7 +68,7 @@ extension LoopKit.TemporaryScheduleOverride.Context {
 
 extension LoopKit.TemporaryScheduleOverridePreset {
 
-    func nsScheduleOverride(for unit: HKUnit) -> NightscoutKit.TemporaryScheduleOverride {
+    func nsScheduleOverride(for unit: LoopUnit) -> NightscoutKit.TemporaryScheduleOverride {
         let nsTargetRange: ClosedRange<Double>?
         if let targetRange = settings.targetRange {
             nsTargetRange = ClosedRange(uncheckedBounds: (

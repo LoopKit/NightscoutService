@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import HealthKit
+import LoopAlgorithm
 import LoopKit
 import NightscoutKit
 
@@ -24,14 +24,14 @@ extension StoredDosingDecision {
         guard let carbsOnBoard = carbsOnBoard else {
             return nil
         }
-        return COBStatus(cob: carbsOnBoard.quantity.doubleValue(for: HKUnit.gram()), timestamp: carbsOnBoard.startDate)
+        return COBStatus(cob: carbsOnBoard.quantity.doubleValue(for: LoopUnit.gram), timestamp: carbsOnBoard.startDate)
     }
     
     var loopStatusPredicted: PredictedBG? {
         guard let predictedGlucose = predictedGlucose, let startDate = predictedGlucose.first?.startDate else {
             return nil
         }
-        return PredictedBG(startDate: startDate, values: predictedGlucose.map { $0.quantity })
+        return PredictedBG(startDate: startDate, values: predictedGlucose.map { $0.quantity.hkQuantity })
     }
     
     var loopStatusAutomaticDoseRecommendation: NightscoutKit.AutomaticDoseRecommendation? {
@@ -122,10 +122,10 @@ extension StoredDosingDecision {
             return NightscoutKit.OverrideStatus(timestamp: date, active: false)
         }
         
-        let unit = glucoseTargetRangeSchedule?.unit ?? HKUnit.milligramsPerDeciliter
-        let lowerTarget = HKQuantity(unit: unit, doubleValue: glucoseTargetRange.minValue)
-        let upperTarget = HKQuantity(unit: unit, doubleValue: glucoseTargetRange.maxValue)
-        let currentCorrectionRange = CorrectionRange(minValue: lowerTarget, maxValue: upperTarget)
+        let unit = glucoseTargetRangeSchedule?.unit ?? LoopUnit.milligramsPerDeciliter
+        let lowerTarget = LoopQuantity(unit: unit, doubleValue: glucoseTargetRange.minValue)
+        let upperTarget = LoopQuantity(unit: unit, doubleValue: glucoseTargetRange.maxValue)
+        let currentCorrectionRange = CorrectionRange(minValue: lowerTarget.hkQuantity, maxValue: upperTarget.hkQuantity)
         let duration = scheduleOverride.duration != .indefinite ? round(scheduleOverride.actualEndDate.timeIntervalSince(date)): nil
         
         return NightscoutKit.OverrideStatus(name: scheduleOverride.context.name,
