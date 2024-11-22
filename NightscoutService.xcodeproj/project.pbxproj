@@ -11,7 +11,6 @@
 		A90E39A122BC773A0016DFE8 /* NightscoutUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */; };
 		A90E39A322BC782C0016DFE8 /* SyncCarbObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */; };
 		A90E39A522BC791E0016DFE8 /* DoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A422BC791E0016DFE8 /* DoseEntry.swift */; };
-		A90E39A722BC7A360016DFE8 /* HKUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A622BC7A360016DFE8 /* HKUnit.swift */; };
 		A90E39A922BC7AD10016DFE8 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A822BC7AD10016DFE8 /* Bundle.swift */; };
 		A91BAC2522BC691A00ABF1BB /* NightscoutServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC1B22BC691A00ABF1BB /* NightscoutServiceKit.framework */; };
 		A91BAC2C22BC691A00ABF1BB /* NightscoutServiceKit.h in Headers */ = {isa = PBXBuildFile; fileRef = A91BAC1E22BC691A00ABF1BB /* NightscoutServiceKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -140,7 +139,6 @@
 		A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutUploader.swift; sourceTree = "<group>"; };
 		A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCarbObject.swift; sourceTree = "<group>"; };
 		A90E39A422BC791E0016DFE8 /* DoseEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoseEntry.swift; sourceTree = "<group>"; };
-		A90E39A622BC7A360016DFE8 /* HKUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKUnit.swift; sourceTree = "<group>"; };
 		A90E39A822BC7AD10016DFE8 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		A91BAC1B22BC691A00ABF1BB /* NightscoutServiceKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutServiceKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91BAC1E22BC691A00ABF1BB /* NightscoutServiceKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutServiceKit.h; sourceTree = "<group>"; };
@@ -298,7 +296,6 @@
 			isa = PBXGroup;
 			children = (
 				A90E39A422BC791E0016DFE8 /* DoseEntry.swift */,
-				A90E39A622BC7A360016DFE8 /* HKUnit.swift */,
 				A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */,
 				C1F7822727CD57A100C0919A /* OverrideTreament.swift */,
 				C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */,
@@ -764,7 +761,6 @@
 				A941B08929BCB99C00F91340 /* RemoteCommandValidator.swift in Sources */,
 				C1398D2027C41E3D00416AD6 /* ProfileSet.swift in Sources */,
 				A9AA6E6329EB07D7008FFA78 /* Action.swift in Sources */,
-				A90E39A722BC7A360016DFE8 /* HKUnit.swift in Sources */,
 				A99A115E29AA28EE007919CE /* RemoteCommandSourceV1.swift in Sources */,
 				A9246B2526231B3A00CCDCB3 /* OTPManager.swift in Sources */,
 				A90E399E22BC76DB0016DFE8 /* TimeInterval.swift in Sources */,
