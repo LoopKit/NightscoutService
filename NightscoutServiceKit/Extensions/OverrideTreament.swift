@@ -7,15 +7,15 @@
 //
 
 import Foundation
-import NightscoutKit
+import LoopAlgorithm
 import LoopKit
-import HealthKit
+import NightscoutKit
 
 extension OverrideTreatment {
     convenience init(override: LoopKit.TemporaryScheduleOverride) {
 
         // NS Treatments should be in mg/dL
-        let unit: HKUnit = .milligramsPerDeciliter
+        let unit: LoopUnit = .milligramsPerDeciliter
 
         let nsTargetRange: ClosedRange<Double>?
         if let targetRange = override.settings.targetRange {

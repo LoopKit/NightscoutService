@@ -7,7 +7,6 @@
 //
 
 import os.log
-import HealthKit
 import LoopKit
 import NightscoutKit
 
