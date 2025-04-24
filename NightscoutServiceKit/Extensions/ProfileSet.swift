@@ -98,7 +98,7 @@ extension ProfileSet {
 
 extension NightscoutKit.TemporaryScheduleOverride  {
 
-    func loopOverride(for unit: LoopUnit) -> LoopKit.TemporaryScheduleOverridePreset? {
+    func loopOverride(for unit: LoopUnit) -> LoopKit.TemporaryPreset? {
         guard let name = name,
             let symbol = symbol
         else {
@@ -114,7 +114,7 @@ extension NightscoutKit.TemporaryScheduleOverride  {
             target = nil
         }
 
-        let temporaryOverrideSettings = TemporaryScheduleOverrideSettings(
+        let temporaryOverrideSettings = TemporaryPresetSettings(
             unit: unit,
             targetRange: target,
             insulinNeedsScaleFactor: insulinNeedsScaleFactor)
@@ -127,7 +127,7 @@ extension NightscoutKit.TemporaryScheduleOverride  {
             loopDuration = .finite(duration)
         }
 
-        return TemporaryScheduleOverridePreset(
+        return TemporaryPreset(
             symbol: symbol,
             name: name,
             settings: temporaryOverrideSettings,
