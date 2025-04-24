@@ -66,7 +66,7 @@ extension LoopKit.TemporaryScheduleOverride.Context {
 
 }
 
-extension LoopKit.TemporaryScheduleOverridePreset {
+extension LoopKit.TemporaryPreset {
 
     func nsScheduleOverride(for unit: LoopUnit) -> NightscoutKit.TemporaryScheduleOverride {
         let nsTargetRange: ClosedRange<Double>?
