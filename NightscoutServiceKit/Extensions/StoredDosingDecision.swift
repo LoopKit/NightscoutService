@@ -39,7 +39,10 @@ extension StoredDosingDecision {
             return nil
         }
         
-        let nightscoutTempBasalAdjustment = TempBasalAdjustment(rate: automaticDoseRecommendation.basalAdjustment.unitsPerHour, duration: automaticDoseRecommendation.basalAdjustment.duration)
+        let nightscoutTempBasalAdjustment = TempBasalAdjustment(
+            rate: automaticDoseRecommendation.basalAdjustment.unitsPerHour,
+            duration: automaticDoseRecommendation.basalAdjustment.duration
+        )
         
         return NightscoutKit.AutomaticDoseRecommendation(
             timestamp: date,
@@ -55,12 +58,17 @@ extension StoredDosingDecision {
     }
     
     var loopStatusEnacted: LoopEnacted? {
-        guard let automaticDoseRecommendation = automaticDoseRecommendation, errors.isEmpty else {
+        guard errors.isEmpty else {
             return nil
         }
-        let tempBasal = automaticDoseRecommendation.basalAdjustment
         // NS needs to be updated to support an "enacted" field with no rate. Once that happens, we should not report a fake cancel here, and rate/duration should be nil instead of 0
-        return LoopEnacted(rate: tempBasal.unitsPerHour, duration: tempBasal.duration, timestamp: date, received: true, bolusVolume: automaticDoseRecommendation.bolusUnits ?? 0)
+        return LoopEnacted(
+            rate: enactedTempBasal?.unitsPerHour ?? 0,
+            duration: enactedTempBasal?.duration ?? 0,
+            timestamp: date,
+            received: true,
+            bolusVolume: enactedBolusAmount ?? 0
+        )
     }
 
     var loopStatusFailureReason: String? {
