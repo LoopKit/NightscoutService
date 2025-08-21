@@ -34,7 +34,7 @@ extension LoopKit.TemporaryScheduleOverride {
             duration: nsDuration,
             targetRange: nsTargetRange,
             insulinNeedsScaleFactor: settings.insulinNeedsScaleFactor,
-            symbol: context.symbol?.textualRepresentation?.string,
+            symbol: context.symbol?.textualRepresentation,
             name: context.name)
     }
 
@@ -92,7 +92,7 @@ extension LoopKit.TemporaryPreset {
             duration: nsDuration,
             targetRange: nsTargetRange,
             insulinNeedsScaleFactor: settings.insulinNeedsScaleFactor,
-            symbol: self.symbol?.textualRepresentation?.string,
+            symbol: self.symbol?.textualRepresentation,
             name: self.name
         )
     }
