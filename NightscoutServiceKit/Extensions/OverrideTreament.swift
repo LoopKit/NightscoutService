@@ -30,12 +30,16 @@ extension OverrideTreatment {
         switch override.context {
         case .custom:
             reason = NSLocalizedString("Custom Override", comment: "Name of custom override")
-        case .legacyWorkout:
-            reason = NSLocalizedString("Workout", comment: "Name of legacy workout override")
+        case .activity(let activity):
+            reason = activity.activityType.name + NSLocalizedString("Activity", comment: "Suffix added to the name of an activity override")
         case .preMeal:
-            reason = NSLocalizedString("Pre-Meal", comment: "Name of pre-meal workout override")
+            reason = NSLocalizedString("Pre-Meal", comment: "Name of pre-meal override")
         case .preset(let preset):
-            reason = preset.symbol + " " + preset.name
+            if let symbol = preset.symbol, symbol.symbolType == .emoji {
+                reason = symbol.value + " " + preset.name
+            } else {
+                reason = preset.name
+            }
         }
 
         let remoteAddress: String?
