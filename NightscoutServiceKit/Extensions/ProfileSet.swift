@@ -59,8 +59,7 @@ extension ProfileSet {
         let correctionRangeOverrides: CorrectionRangeOverrides?
         if let range = settings.preMealTargetRange {
             correctionRangeOverrides = CorrectionRangeOverrides(
-                preMeal: GlucoseRange(minValue: range.lowerBound, maxValue: range.upperBound, unit: settingsGlucoseUnit),
-                workout: nil // No longer used
+                preMeal: GlucoseRange(minValue: range.lowerBound, maxValue: range.upperBound, unit: settingsGlucoseUnit)
             )
         } else {
             correctionRangeOverrides = nil
@@ -128,7 +127,7 @@ extension NightscoutKit.TemporaryScheduleOverride  {
         }
 
         return TemporaryPreset(
-            symbol: symbol,
+            symbol: .emoji(symbol),
             name: name,
             settings: temporaryOverrideSettings,
             duration: loopDuration)

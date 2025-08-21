@@ -34,7 +34,7 @@ extension LoopKit.TemporaryScheduleOverride {
             duration: nsDuration,
             targetRange: nsTargetRange,
             insulinNeedsScaleFactor: settings.insulinNeedsScaleFactor,
-            symbol: context.symbol,
+            symbol: context.symbol?.textualRepresentation,
             name: context.name)
     }
 
@@ -46,8 +46,8 @@ extension LoopKit.TemporaryScheduleOverride.Context {
         switch self {
         case .custom:
             return nil
-        case .legacyWorkout:
-            return LocalizedString("Workout", comment: "Name uploaded to Nightscout for legacy workout override")
+        case .activity(let activity):
+            return activity.preset.name
         case .preMeal:
             return LocalizedString("Pre-Meal", comment: "Name uploaded to Nightscout for Pre-Meal override")
         case .preset(let preset):
@@ -55,10 +55,12 @@ extension LoopKit.TemporaryScheduleOverride.Context {
         }
     }
 
-    var symbol: String? {
+    var symbol: PresetSymbol? {
         switch self {
         case .preset(let preset):
             return preset.symbol
+        case .activity(let activity):
+            return activity.preset.symbol
         default:
             return nil
         }
@@ -90,8 +92,9 @@ extension LoopKit.TemporaryPreset {
             duration: nsDuration,
             targetRange: nsTargetRange,
             insulinNeedsScaleFactor: settings.insulinNeedsScaleFactor,
-            symbol: self.symbol,
-            name: self.name)
+            symbol: self.symbol?.textualRepresentation,
+            name: self.name
+        )
     }
 
 }
