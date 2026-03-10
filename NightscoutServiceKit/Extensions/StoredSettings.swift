@@ -6,7 +6,6 @@
 //  Copyright © 2019 LoopKit Authors. All rights reserved.
 //
 
-import HealthKit
 import LoopKit
 import NightscoutKit
 
@@ -49,8 +48,8 @@ extension StoredSettings {
 
         return NightscoutKit.LoopSettings(
             dosingEnabled: dosingEnabled,
-            overridePresets: overridePresets?.map { $0.nsScheduleOverride(for: bloodGlucoseUnit) } ?? [],
-            scheduleOverride: scheduleOverride?.nsScheduleOverride(for: bloodGlucoseUnit),
+            overridePresets: overridePresets.map { $0.nsScheduleOverride(for: bloodGlucoseUnit) },
+            scheduleOverride: nil,
             minimumBGGuard: suspendThreshold?.quantity.doubleValue(for: bloodGlucoseUnit),
             preMealTargetRange: nightscoutPreMealTargetRange,
             maximumBasalRatePerHour: maximumBasalRatePerHour,

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import HealthKit
+import LoopAlgorithm
 import LoopKit
 import NightscoutKit
 
@@ -24,14 +24,14 @@ extension StoredDosingDecision {
         guard let carbsOnBoard = carbsOnBoard else {
             return nil
         }
-        return COBStatus(cob: carbsOnBoard.quantity.doubleValue(for: HKUnit.gram()), timestamp: carbsOnBoard.startDate)
+        return COBStatus(cob: carbsOnBoard.quantity.doubleValue(for: LoopUnit.gram), timestamp: carbsOnBoard.startDate)
     }
     
     var loopStatusPredicted: PredictedBG? {
         guard let predictedGlucose = predictedGlucose, let startDate = predictedGlucose.first?.startDate else {
             return nil
         }
-        return PredictedBG(startDate: startDate, values: predictedGlucose.map { $0.quantity })
+        return PredictedBG(startDate: startDate, values: predictedGlucose.map { $0.quantity.hkQuantity })
     }
     
     var loopStatusAutomaticDoseRecommendation: NightscoutKit.AutomaticDoseRecommendation? {
@@ -39,13 +39,10 @@ extension StoredDosingDecision {
             return nil
         }
         
-        let nightscoutTempBasalAdjustment: TempBasalAdjustment?
-        
-        if let basalAdjustment = automaticDoseRecommendation.basalAdjustment {
-            nightscoutTempBasalAdjustment = TempBasalAdjustment(rate: basalAdjustment.unitsPerHour, duration: basalAdjustment.duration)
-        } else {
-            nightscoutTempBasalAdjustment = nil
-        }
+        let nightscoutTempBasalAdjustment = TempBasalAdjustment(
+            rate: automaticDoseRecommendation.basalAdjustment.unitsPerHour,
+            duration: automaticDoseRecommendation.basalAdjustment.duration
+        )
         
         return NightscoutKit.AutomaticDoseRecommendation(
             timestamp: date,
@@ -61,12 +58,17 @@ extension StoredDosingDecision {
     }
     
     var loopStatusEnacted: LoopEnacted? {
-        guard let automaticDoseRecommendation = automaticDoseRecommendation, errors.isEmpty else {
+        guard errors.isEmpty else {
             return nil
         }
-        let tempBasal = automaticDoseRecommendation.basalAdjustment
         // NS needs to be updated to support an "enacted" field with no rate. Once that happens, we should not report a fake cancel here, and rate/duration should be nil instead of 0
-        return LoopEnacted(rate: tempBasal?.unitsPerHour ?? 0, duration: tempBasal?.duration ?? 0, timestamp: date, received: true, bolusVolume: automaticDoseRecommendation.bolusUnits ?? 0)
+        return LoopEnacted(
+            rate: enactedTempBasal?.unitsPerHour ?? 0,
+            duration: enactedTempBasal?.duration ?? 0,
+            timestamp: date,
+            received: true,
+            bolusVolume: enactedBolusAmount ?? 0
+        )
     }
 
     var loopStatusFailureReason: String? {
@@ -122,10 +124,10 @@ extension StoredDosingDecision {
             return NightscoutKit.OverrideStatus(timestamp: date, active: false)
         }
         
-        let unit = glucoseTargetRangeSchedule?.unit ?? HKUnit.milligramsPerDeciliter
-        let lowerTarget = HKQuantity(unit: unit, doubleValue: glucoseTargetRange.minValue)
-        let upperTarget = HKQuantity(unit: unit, doubleValue: glucoseTargetRange.maxValue)
-        let currentCorrectionRange = CorrectionRange(minValue: lowerTarget, maxValue: upperTarget)
+        let unit = glucoseTargetRangeSchedule?.unit ?? LoopUnit.milligramsPerDeciliter
+        let lowerTarget = LoopQuantity(unit: unit, doubleValue: glucoseTargetRange.minValue)
+        let upperTarget = LoopQuantity(unit: unit, doubleValue: glucoseTargetRange.maxValue)
+        let currentCorrectionRange = CorrectionRange(minValue: lowerTarget.hkQuantity, maxValue: upperTarget.hkQuantity)
         let duration = scheduleOverride.duration != .indefinite ? round(scheduleOverride.actualEndDate.timeIntervalSince(date)): nil
         
         return NightscoutKit.OverrideStatus(name: scheduleOverride.context.name,

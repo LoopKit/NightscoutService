@@ -7,22 +7,22 @@
 //
 
 import Foundation
-import NightscoutKit
+import LoopAlgorithm
 import LoopKit
-import HealthKit
+import NightscoutKit
 
-private extension HKUnit {
-    static func glucoseUnitFromNightscoutUnitString(_ unitString: String) -> HKUnit? {
+private extension LoopUnit {
+    static func glucoseUnitFromNightscoutUnitString(_ unitString: String) -> LoopUnit? {
         // Some versions of Loop incorrectly uploaded units with
         // special characters to avoid line breaking.
-        if unitString == HKUnit.millimolesPerLiter.shortLocalizedUnitString() ||
-            unitString == HKUnit.millimolesPerLiter.shortLocalizedUnitString(avoidLineBreaking: false)
+        if unitString == LoopUnit.millimolesPerLiter.shortLocalizedUnitString() ||
+            unitString == LoopUnit.millimolesPerLiter.shortLocalizedUnitString(avoidLineBreaking: false)
         {
             return .millimolesPerLiter
         }
 
-        if unitString == HKUnit.milligramsPerDeciliter.shortLocalizedUnitString() ||
-            unitString == HKUnit.milligramsPerDeciliter.shortLocalizedUnitString(avoidLineBreaking: false)
+        if unitString == LoopUnit.milligramsPerDeciliter.shortLocalizedUnitString() ||
+            unitString == LoopUnit.milligramsPerDeciliter.shortLocalizedUnitString(avoidLineBreaking: false)
         {
             return .milligramsPerDeciliter
         }
@@ -36,14 +36,14 @@ extension ProfileSet {
 
         guard let profile = store["Default"],
               let glucoseSafetyLimit = settings.minimumBGGuard,
-              let settingsGlucoseUnit = HKUnit.glucoseUnitFromNightscoutUnitString(units)
+              let settingsGlucoseUnit = LoopUnit.glucoseUnitFromNightscoutUnitString(units)
         else {
             return nil
         }
 
         // If units are specified on the schedule, prefer those over the units specified on the ProfileSet
-        let scheduleGlucoseUnit: HKUnit
-        if let profileUnitString = profile.units, let profileUnit = HKUnit.glucoseUnitFromNightscoutUnitString(profileUnitString)
+        let scheduleGlucoseUnit: LoopUnit
+        if let profileUnitString = profile.units, let profileUnit = LoopUnit.glucoseUnitFromNightscoutUnitString(profileUnitString)
         {
             scheduleGlucoseUnit = profileUnit
         } else {
@@ -59,8 +59,7 @@ extension ProfileSet {
         let correctionRangeOverrides: CorrectionRangeOverrides?
         if let range = settings.preMealTargetRange {
             correctionRangeOverrides = CorrectionRangeOverrides(
-                preMeal: GlucoseRange(minValue: range.lowerBound, maxValue: range.upperBound, unit: settingsGlucoseUnit),
-                workout: nil // No longer used
+                preMeal: GlucoseRange(minValue: range.lowerBound, maxValue: range.upperBound, unit: settingsGlucoseUnit)
             )
         } else {
             correctionRangeOverrides = nil
@@ -76,7 +75,7 @@ extension ProfileSet {
             timeZone: profile.timeZone)
 
         let carbSchedule = CarbRatioSchedule(
-            unit: .gram(),
+            unit: .gram,
             dailyItems: profile.carbratio.map { RepeatingScheduleValue(startTime: $0.offset, value: $0.value) },
             timeZone: profile.timeZone)
 
@@ -98,7 +97,7 @@ extension ProfileSet {
 
 extension NightscoutKit.TemporaryScheduleOverride  {
 
-    func loopOverride(for unit: HKUnit) -> LoopKit.TemporaryScheduleOverridePreset? {
+    func loopOverride(for unit: LoopUnit) -> LoopKit.TemporaryPreset? {
         guard let name = name,
             let symbol = symbol
         else {
@@ -114,7 +113,7 @@ extension NightscoutKit.TemporaryScheduleOverride  {
             target = nil
         }
 
-        let temporaryOverrideSettings = TemporaryScheduleOverrideSettings(
+        let temporaryOverrideSettings = TemporaryPresetSettings(
             unit: unit,
             targetRange: target,
             insulinNeedsScaleFactor: insulinNeedsScaleFactor)
@@ -127,8 +126,8 @@ extension NightscoutKit.TemporaryScheduleOverride  {
             loopDuration = .finite(duration)
         }
 
-        return TemporaryScheduleOverridePreset(
-            symbol: symbol,
+        return TemporaryPreset(
+            symbol: .emoji(symbol),
             name: name,
             settings: temporaryOverrideSettings,
             duration: loopDuration)
