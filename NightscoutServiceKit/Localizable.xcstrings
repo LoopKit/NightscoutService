@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Activity" : {
+      "comment" : "Suffix added to the name of an activity override"
+    },
     "Bolus Entry" : {
       "comment" : "The remote action name for Bolus Entry",
       "localizations" : {
@@ -887,7 +890,7 @@
       }
     },
     "Pre-Meal" : {
-      "comment" : "Name of pre-meal workout override\nName uploaded to Nightscout for Pre-Meal override",
+      "comment" : "Name of pre-meal override\nName uploaded to Nightscout for Pre-Meal override",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1125,6 +1128,7 @@
     },
     "Workout" : {
       "comment" : "Name of legacy workout override\nName uploaded to Nightscout for legacy workout override",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
