@@ -55,12 +55,6 @@
             "value" : "מפתח API"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एपीआई पास्वर्ड"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -272,12 +266,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ביטול"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "निरस्त"
           }
         },
         "it" : {
