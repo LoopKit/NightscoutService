@@ -200,7 +200,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sunteți sigur/ă că doriți să resetați cheia secretă?"
+            "value" : "Sunteți sigur că doriți să resetați cheia secretă?"
           }
         },
         "ru" : {
@@ -319,7 +319,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Renunță"
+            "value" : "Anulați"
           }
         },
         "ru" : {
@@ -558,7 +558,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Șterge serviciul"
+            "value" : "Ștergeți serviciul"
           }
         },
         "ru" : {
