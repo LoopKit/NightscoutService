@@ -144,7 +144,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oprește înlocuirea"
+            "value" : "Anulați suprascriere"
           }
         },
         "ru" : {
@@ -251,7 +251,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cantitate CH"
+            "value" : "Intrare Carbohidrați"
           }
         },
         "ru" : {
@@ -625,7 +625,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parola unică lipsește"
+            "value" : "Parola OTP lipsește"
           }
         },
         "ru" : {
@@ -851,7 +851,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Înlocuire"
+            "value" : "Modificare"
           }
         },
         "ru" : {
