@@ -38,7 +38,12 @@ extension StoredGlucoseSample {
             glucoseType: wasUserEntered ? .meter : .sensor,
             trend: glucoseTrend,
             changeRate: trendRate?.doubleValue(for: .milligramsPerDeciliterPerMinute),
-            isCalibration: isDisplayOnly
+            // A calibration is a user-entered fingerstick BG used to
+            // calibrate the sensor -- not the same as isDisplayOnly,
+            // which sensor sources set on values they don't trust for
+            // dosing (e.g. Libre 3 stabilization period). Only count as
+            // a calibration if both flags coincide.
+            isCalibration: wasUserEntered && isDisplayOnly
         )
     }
 
