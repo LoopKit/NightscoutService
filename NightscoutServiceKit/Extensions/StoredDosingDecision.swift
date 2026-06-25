@@ -139,7 +139,10 @@ extension StoredDosingDecision {
     var uploaderStatus: UploaderStatus {
         let uploaderDevice = UIDevice.current
         let battery = uploaderDevice.isBatteryMonitoringEnabled ? Int(uploaderDevice.batteryLevel * 100) : 0
-        return UploaderStatus(name: uploaderDevice.name, timestamp: date, battery: battery)
+        let isCharging: Bool? = uploaderDevice.isBatteryMonitoringEnabled
+            ? (uploaderDevice.batteryState == .charging || uploaderDevice.batteryState == .full)
+            : nil
+        return UploaderStatus(name: uploaderDevice.name, timestamp: date, battery: battery, isCharging: isCharging)
     }
     
     func deviceStatus(automaticDoseDecision: StoredDosingDecision?) -> DeviceStatus {
