@@ -101,7 +101,8 @@ extension StoredSettings {
             defaultProfile: "Default",
             store: ["Default": profile],
             settings: loopSettings,
-            syncIdentifier: syncIdentifier.uuidString)
+            syncIdentifier: syncIdentifier.uuidString,
+            isAPNSProduction: Bundle.main.isAPNSProductionEnvironment)
     }
 
 }
@@ -112,6 +113,26 @@ fileprivate extension Array where Element == RepeatingScheduleValue<Double> {
         return map { item -> ProfileSet.ScheduleItem in
             return ProfileSet.ScheduleItem(offset: item.startTime, value: item.value)
         }
+    }
+
+}
+
+extension Bundle {
+
+    // True for production APNS (TestFlight builds), false for sandbox (direct Xcode to device
+    // builds). Uploaded to Nightscout so followers target the correct APNS endpoint.
+    var isAPNSProductionEnvironment: Bool {
+        #if targetEnvironment(simulator)
+            return false
+        #else
+            if url(forResource: "embedded", withExtension: "mobileprovision") != nil {
+                return false
+            }
+            guard let receiptName = appStoreReceiptURL?.lastPathComponent else {
+                return false
+            }
+            return "sandboxReceipt".caseInsensitiveCompare(receiptName) == .orderedSame
+        #endif
     }
 
 }
