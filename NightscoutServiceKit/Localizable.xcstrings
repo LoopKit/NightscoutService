@@ -57,6 +57,12 @@
             "state" : "translated",
             "value" : "Ввод болюса"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大剂量录入"
+          }
         }
       }
     },
@@ -455,6 +461,12 @@
             "state" : "translated",
             "value" : "Истек срок действия команды"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已过期"
+          }
         }
       }
     },
@@ -625,13 +637,19 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parola OTP lipsește"
+            "value" : "Parola de unică folosință lipsește"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсутствует одноразовый пароль"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少一次性验证码 (OTP)"
           }
         }
       }
@@ -1061,6 +1079,12 @@
             "state" : "translated",
             "value" : "Ед"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "U"
+          }
         }
       }
     },
@@ -1119,6 +1143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Необработанное уведомление: %1$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未处理通知：%1$@"
           }
         }
       }
