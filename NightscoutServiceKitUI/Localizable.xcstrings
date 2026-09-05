@@ -130,7 +130,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API密码"
+            "value" : "API密钥"
           }
         }
       }
@@ -684,6 +684,12 @@
             "state" : "translated",
             "value" : "Tamamlandı"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
         }
       }
     },
@@ -1135,6 +1141,12 @@
             "state" : "translated",
             "value" : "Nightscout"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nightscout"
+          }
         }
       }
     },
@@ -1223,6 +1235,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nightscout Oturum Açma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nightscout 登录"
           }
         }
       }
@@ -1740,6 +1758,12 @@
             "state" : "translated",
             "value" : "Gizli Anahtarı Sıfırla"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置密钥"
+          }
         }
       }
     },
@@ -2088,6 +2112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL 地址"
           }
         }
       }
