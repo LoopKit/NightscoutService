@@ -18,6 +18,11 @@ extension DoseEntry {
         case .basal:
             return nil
         case .bolus:
+            // Non-automatic boluses may carry a finer origin (remote/watch/manual/shortcut), recorded by the
+            // app against the dose's syncIdentifier. Automatic boluses are already distinguished by `automatic`.
+            // `notes` carries the human-readable label so it shows in the Nightscout UI; `bolusOrigin` is the
+            // stable machine token.
+            let origin = syncIdentifier.flatMap { BolusOriginStore.shared.origin(forSyncIdentifier: $0) }
             return BolusNightscoutTreatment(
                 timestamp: startDate,
                 enteredBy: source,
@@ -27,9 +32,11 @@ extension DoseEntry {
                 unabsorbed: 0,  // The pump's reported IOB isn't relevant, nor stored
                 duration: duration,
                 automatic: automatic ?? false,
+                notes: origin?.displayName,
                 /* id: objectId, */ /// Specifying _id only works when doing a put (modify); all dose uploads are currently posting so they can be either create or update
                 syncIdentifier: syncIdentifier,
-                insulinType: insulinType?.brandName
+                insulinType: insulinType?.brandName,
+                bolusOrigin: origin?.rawValue
             )
         case .resume:
             return nil
