@@ -251,7 +251,7 @@ public class OTPManager {
             case .expired(let deliveryDate, let maxOTPsToAccept):
                 if let deliveryDate = deliveryDate {
                     let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "h:mm"
+                    dateFormatter.timeStyle = .short
                     return String(format: "Error: Password sent at %@ has expired. Only the last %u passwords are accepted. See LoopDocs for troubleshooting.", dateFormatter.string(from: deliveryDate), maxOTPsToAccept)
                 } else {
                     return String(format: "Error: Password has expired. See LoopDocs for troubleshooting.")
