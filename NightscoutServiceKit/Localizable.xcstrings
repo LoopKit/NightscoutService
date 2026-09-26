@@ -132,7 +132,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annuleer Override"
+            "value" : "Annuleer override"
           }
         },
         "pl" : {
@@ -352,7 +352,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aangepaste Override"
+            "value" : "Aangepaste override"
           }
         },
         "pl" : {
@@ -1124,7 +1124,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Onverwerkte Melding: %1$@"
+            "value" : "Onverwerkte melding: %1$@"
           }
         },
         "pl" : {
@@ -1219,7 +1219,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Training"
+            "value" : "Training/sport"
           }
         },
         "pl" : {
