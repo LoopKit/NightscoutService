@@ -528,7 +528,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Service Verwijderen"
+            "value" : "Service verwijderen"
           }
         },
         "pl" : {
@@ -646,7 +646,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gereed"
+            "value" : "Voltooid"
           }
         },
         "pl" : {
@@ -1412,7 +1412,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ok"
+            "value" : "OK"
           }
         },
         "pl" : {
@@ -1518,7 +1518,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One-Time Wachtwoord"
+            "value" : "One-Time wachtwoord"
           }
         },
         "pl" : {
@@ -1732,7 +1732,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geheime Sleutel resetten"
+            "value" : "Geheime sleutel resetten"
           }
         },
         "pl" : {
