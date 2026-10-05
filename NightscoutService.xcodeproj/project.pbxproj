@@ -39,6 +39,7 @@
 		A95F887526C694E900D8A009 /* OTPManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95F887426C694E900D8A009 /* OTPManagerTestCase.swift */; };
 		A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990222BC7095005E39D3 /* NightscoutService.swift */; };
 		4C4DB36E9FCF1AEC78DEA00C /* UIDevice+watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */; };
+		A9D8A7EC4423B0F99CA16DEF /* NightscoutService+ConfigurationSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */; };
 		A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */; };
 		A99A115E29AA28EE007919CE /* RemoteCommandSourceV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99A115D29AA28EE007919CE /* RemoteCommandSourceV1.swift */; };
 		A99C713523396CB100AB9035 /* NightscoutServiceKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = A99C713323396CB100AB9035 /* NightscoutServiceKitPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -174,6 +175,7 @@
 		A95F887426C694E900D8A009 /* OTPManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPManagerTestCase.swift; sourceTree = "<group>"; };
 		A993990222BC7095005E39D3 /* NightscoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutService.swift; sourceTree = "<group>"; };
 		A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+watchOS.swift"; sourceTree = "<group>"; };
+		3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+ConfigurationSharing.swift"; sourceTree = "<group>"; };
 		A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+UI.swift"; sourceTree = "<group>"; };
 		A99A115D29AA28EE007919CE /* RemoteCommandSourceV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCommandSourceV1.swift; sourceTree = "<group>"; };
 		A99C713123396CB100AB9035 /* NightscoutServiceKitPlugin.loopplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutServiceKitPlugin.loopplugin; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -308,6 +310,7 @@
 				A91BAC1F22BC691A00ABF1BB /* Info.plist */,
 				A993990222BC7095005E39D3 /* NightscoutService.swift */,
 				A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */,
+				3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */,
 				C1E703632506BE9400DAB534 /* ObjectIdCache.swift */,
 				A90E399F22BC77220016DFE8 /* Extensions */,
 				B66D1FBF2E6B34D800471149 /* Localizable.xcstrings */,
@@ -716,6 +719,7 @@
 				C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */,
 				A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */,
 				4C4DB36E9FCF1AEC78DEA00C /* UIDevice+watchOS.swift in Sources */,
+				A9D8A7EC4423B0F99CA16DEF /* NightscoutService+ConfigurationSharing.swift in Sources */,
 				A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */,
 				A9AA6E6429EB07D7008FFA78 /* CarbAction.swift in Sources */,
 				A90E39A922BC7AD10016DFE8 /* Bundle.swift in Sources */,
