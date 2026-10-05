@@ -38,6 +38,8 @@
 		A94DA7642353CF930082E26D /* StoredGlucoseSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94DA7632353CF930082E26D /* StoredGlucoseSample.swift */; };
 		A95F887526C694E900D8A009 /* OTPManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95F887426C694E900D8A009 /* OTPManagerTestCase.swift */; };
 		A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990222BC7095005E39D3 /* NightscoutService.swift */; };
+		4C4DB36E9FCF1AEC78DEA00C /* UIDevice+watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */; };
+		A9D8A7EC4423B0F99CA16DEF /* NightscoutService+ConfigurationSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */; };
 		A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */; };
 		A99A115E29AA28EE007919CE /* RemoteCommandSourceV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99A115D29AA28EE007919CE /* RemoteCommandSourceV1.swift */; };
 		A99C713523396CB100AB9035 /* NightscoutServiceKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = A99C713323396CB100AB9035 /* NightscoutServiceKitPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,7 +70,7 @@
 		C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */; };
 		C1B9ACF827DE987400857532 /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = C1B9ACF727DE987400857532 /* OneTimePassword */; };
 		C1C1349627DD35060097B5AD /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349527DD35060097B5AD /* LoopKit.framework */; };
-		C1C1349827DD35260097B5AD /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349727DD35260097B5AD /* LoopKitUI.framework */; };
+		C1C1349827DD35260097B5AD /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349727DD35260097B5AD /* LoopKitUI.framework */; platformFilter = ios; };
 		C1C1349D27DD38000097B5AD /* NightscoutServiceKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC3A22BC69B500ABF1BB /* NightscoutServiceKitUI.framework */; };
 		C1C1349E27DD38000097B5AD /* NightscoutServiceKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC3A22BC69B500ABF1BB /* NightscoutServiceKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1CEBFF429BCC104007FD8A3 /* NightscoutKit in Frameworks */ = {isa = PBXBuildFile; productRef = C1CEBFF329BCC104007FD8A3 /* NightscoutKit */; };
@@ -172,6 +174,8 @@
 		A95F887326C694E800D8A009 /* NightscoutServiceKitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NightscoutServiceKitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A95F887426C694E900D8A009 /* OTPManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPManagerTestCase.swift; sourceTree = "<group>"; };
 		A993990222BC7095005E39D3 /* NightscoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutService.swift; sourceTree = "<group>"; };
+		A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+watchOS.swift"; sourceTree = "<group>"; };
+		3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+ConfigurationSharing.swift"; sourceTree = "<group>"; };
 		A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+UI.swift"; sourceTree = "<group>"; };
 		A99A115D29AA28EE007919CE /* RemoteCommandSourceV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCommandSourceV1.swift; sourceTree = "<group>"; };
 		A99C713123396CB100AB9035 /* NightscoutServiceKitPlugin.loopplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutServiceKitPlugin.loopplugin; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -305,6 +309,8 @@
 				A9246B2426231B3A00CCDCB3 /* OTPManager.swift */,
 				A91BAC1F22BC691A00ABF1BB /* Info.plist */,
 				A993990222BC7095005E39D3 /* NightscoutService.swift */,
+				A558C4A94B5D4D11CDF9C2D5 /* UIDevice+watchOS.swift */,
+				3CD36E51243DEE9CA7CB8703 /* NightscoutService+ConfigurationSharing.swift */,
 				C1E703632506BE9400DAB534 /* ObjectIdCache.swift */,
 				A90E399F22BC77220016DFE8 /* Extensions */,
 				B66D1FBF2E6B34D800471149 /* Localizable.xcstrings */,
@@ -712,6 +718,8 @@
 				A941B09129BD4A9E00F91340 /* BolusRemoteNotification.swift in Sources */,
 				C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */,
 				A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */,
+				4C4DB36E9FCF1AEC78DEA00C /* UIDevice+watchOS.swift in Sources */,
+				A9D8A7EC4423B0F99CA16DEF /* NightscoutService+ConfigurationSharing.swift in Sources */,
 				A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */,
 				A9AA6E6429EB07D7008FFA78 /* CarbAction.swift in Sources */,
 				A90E39A922BC7AD10016DFE8 /* Bundle.swift in Sources */,
@@ -1065,8 +1073,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
@@ -1093,8 +1104,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};
