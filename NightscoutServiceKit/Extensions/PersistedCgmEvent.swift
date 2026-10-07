@@ -16,6 +16,11 @@ extension PersistedCgmEvent {
         case .sensorStart:
             let note = "SensorID: \(deviceIdentifier)"
             return NightscoutTreatment(timestamp: date, enteredBy: source, notes: note, eventType: .sensorStart)
+        case .sensorIssue:
+            guard let failureMessage = failureMessage else {
+                return nil
+            }
+            return NightscoutTreatment(timestamp: date, enteredBy: source, notes: failureMessage, eventType: .note)
             // NS does not have a transmitter start type event yet
 //        case .transmitterStart:
 //            let note = "TransmitterID: \(deviceIdentifier)"
