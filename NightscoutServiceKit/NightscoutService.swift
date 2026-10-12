@@ -205,7 +205,6 @@ extension NightscoutService: RemoteDataService {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let createdUploaded = !created.isEmpty
                     let syncIdentifiers = created.map { $0.syncIdentifier }
                     for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
                         if let syncIdentifier = syncIdentifier {
@@ -218,12 +217,12 @@ extension NightscoutService: RemoteDataService {
                         switch result {
                         case .failure(let error):
                             continuation.resume(throwing: error)
-                        case .success(let updatedUploaded):
+                        case .success:
                             uploader.deleteCarbData(deleted, usingObjectIdCache: self.objectIdCache) { result in
                                 switch result {
                                 case .failure(let error):
                                     continuation.resume(throwing: error)
-                                case .success(let deletedUploaded):
+                                case .success:
                                     self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
                                     self.stateDelegate?.pluginDidUpdateState(self)
                                     continuation.resume()
@@ -249,7 +248,6 @@ extension NightscoutService: RemoteDataService {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let createdUploaded = !created.isEmpty
                     let syncIdentifiers = created.map { $0.syncIdentifier }
                     for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
                         if let syncIdentifier = syncIdentifier {
@@ -262,7 +260,7 @@ extension NightscoutService: RemoteDataService {
                         switch result {
                         case .failure(let error):
                             continuation.resume(throwing: error)
-                        case .success(let deletedUploaded):
+                        case .success:
                             self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
                             self.stateDelegate?.pluginDidUpdateState(self)
                             continuation.resume()
