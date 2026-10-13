@@ -158,10 +158,22 @@ extension StoredDosingDecision {
                                    automaticDoseRecommendation: loopStatusAutomaticDoseRecommendation,
                                    recommendedBolus: loopStatusRecommendedBolus,
                                    enacted: automaticDoseDecision?.loopStatusEnacted,
-                                   failureReason: automaticDoseDecision?.loopStatusFailureReason),
+                                   failureReason: automaticDoseDecision?.loopStatusFailureReason,
+                                   algorithmExperiments: (automaticDoseDecision?.algorithmExperiments ?? algorithmExperiments)?.loopStatusAlgorithmExperiments),
             overrideStatus: overrideStatus)
     }
     
+}
+
+extension StoredDosingDecision.AlgorithmExperiments {
+    var loopStatusAlgorithmExperiments: [String: Any] {
+        var experiments: [String: Any] = [
+            "integralRetrospectiveCorrection": integralRetrospectiveCorrection,
+            "glucoseBasedApplicationFactor": glucoseBasedApplicationFactor
+        ]
+        experiments["applicationFactor"] = applicationFactor
+        return experiments
+    }
 }
 
 extension StoredDosingDecision.Issue {
