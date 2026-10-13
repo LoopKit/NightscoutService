@@ -18,6 +18,8 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>com.loopkit.Loop.PluginSubtitle</key>
+	<string>Upload data and receive remote commands</string>
 	<key>com.loopkit.Loop.ServiceCategory</key>
 	<string>Remote Data</string>
 	<key>com.loopkit.Loop.ServiceDisplayName</key>
