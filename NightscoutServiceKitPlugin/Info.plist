@@ -18,8 +18,10 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>com.loopkit.Loop.ServiceCategory</key>
+	<string>Remote Data</string>
 	<key>com.loopkit.Loop.ServiceDisplayName</key>
-	<string>Nightscout Service</string>
+	<string>Nightscout</string>
 	<key>com.loopkit.Loop.ServiceIdentifier</key>
 	<string>NightscoutService</string>
 </dict>
