@@ -158,7 +158,8 @@ extension StoredDosingDecision {
                                    automaticDoseRecommendation: loopStatusAutomaticDoseRecommendation,
                                    recommendedBolus: loopStatusRecommendedBolus,
                                    enacted: automaticDoseDecision?.loopStatusEnacted,
-                                   failureReason: automaticDoseDecision?.loopStatusFailureReason),
+                                   failureReason: automaticDoseDecision?.loopStatusFailureReason,
+                                   algorithmExperiments: (automaticDoseDecision?.algorithmExperiments ?? algorithmExperiments)?.map { $0.jsonObject }),
             overrideStatus: overrideStatus)
     }
     

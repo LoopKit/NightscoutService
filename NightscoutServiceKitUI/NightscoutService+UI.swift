@@ -11,7 +11,7 @@ import LoopKit
 import LoopKitUI
 import NightscoutServiceKit
 
-extension NightscoutService: ServiceUI {
+extension NightscoutService: @retroactive ServiceUI {
     public static var image: UIImage? {
         UIImage(named: "nightscout", in: Bundle(for: ServiceUICoordinator.self), compatibleWith: nil)!
     }

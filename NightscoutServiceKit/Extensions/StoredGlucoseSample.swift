@@ -43,7 +43,9 @@ extension StoredGlucoseSample {
             // which sensor sources set on values they don't trust for
             // dosing (e.g. Libre 3 stabilization period). Only count as
             // a calibration if both flags coincide.
-            isCalibration: wasUserEntered && isDisplayOnly
+            isCalibration: wasUserEntered && isDisplayOnly,
+            isBackfill: isBackfill ? true : nil,
+            receivedTime: receivedDate
         )
     }
 
