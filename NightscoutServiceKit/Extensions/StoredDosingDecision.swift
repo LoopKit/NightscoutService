@@ -56,6 +56,22 @@ extension StoredDosingDecision {
         }
         return manualBolusRecommendation.recommendation.amount
     }
+
+    var loopStatusBolusCalculation: BolusCalculation? {
+        guard let manualBolusRequested = manualBolusRequested else {
+            return nil
+        }
+        let glucose = manualGlucoseSample.map { ($0.quantity, $0.startDate) } ?? historicalGlucose?.last.map { ($0.quantity, $0.startDate) }
+        return BolusCalculation(
+            requested: manualBolusRequested,
+            recommended: manualBolusRecommendation?.recommendation.amount,
+            recommendationDate: manualBolusRecommendation?.date,
+            carbs: carbEntry?.quantity.doubleValue(for: LoopUnit.gram),
+            carbsDate: carbEntry?.startDate,
+            carbSyncIdentifier: carbEntry?.syncIdentifier,
+            glucose: glucose?.0.doubleValue(for: .milligramsPerDeciliter),
+            glucoseDate: glucose?.1)
+    }
     
     var loopStatusEnacted: LoopEnacted? {
         guard errors.isEmpty else {
@@ -141,7 +157,7 @@ extension StoredDosingDecision {
     var uploaderStatus: UploaderStatus {
         let uploaderDevice = UIDevice.current
         let battery = uploaderDevice.isBatteryMonitoringEnabled ? Int(uploaderDevice.batteryLevel * 100) : 0
-        return UploaderStatus(name: uploaderDevice.name, timestamp: date, battery: battery)
+        return UploaderStatus(name: uploaderDevice.name, timestamp: date, battery: battery, timeZone: controllerTimeZone.identifier)
     }
     
     func deviceStatus(automaticDoseDecision: StoredDosingDecision?) -> DeviceStatus {
@@ -157,8 +173,10 @@ extension StoredDosingDecision {
                                    predicted: loopStatusPredicted,
                                    automaticDoseRecommendation: loopStatusAutomaticDoseRecommendation,
                                    recommendedBolus: loopStatusRecommendedBolus,
+                                   bolusCalculation: loopStatusBolusCalculation,
                                    enacted: automaticDoseDecision?.loopStatusEnacted,
                                    failureReason: automaticDoseDecision?.loopStatusFailureReason,
+                                   failureCode: automaticDoseDecision?.errors.first?.id,
                                    algorithmExperiments: (automaticDoseDecision?.algorithmExperiments ?? algorithmExperiments)?.map { $0.jsonObject }),
             overrideStatus: overrideStatus)
     }
