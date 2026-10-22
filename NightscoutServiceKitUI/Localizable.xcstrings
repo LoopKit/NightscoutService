@@ -55,12 +55,6 @@
             "value" : "מפתח API"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एपीआई पास्वर्ड"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -136,7 +130,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API密码"
+            "value" : "API密钥"
           }
         }
       }
@@ -200,7 +194,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sunteți sigur/ă că doriți să resetați cheia secretă?"
+            "value" : "Sunteți sigur că doriți să resetați cheia secretă?"
           }
         },
         "ru" : {
@@ -274,12 +268,6 @@
             "value" : "ביטול"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "निरस्त"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -319,7 +307,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Renunță"
+            "value" : "Anulați"
           }
         },
         "ru" : {
@@ -540,7 +528,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Service Verwijderen"
+            "value" : "Service verwijderen"
           }
         },
         "pl" : {
@@ -558,7 +546,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Șterge serviciul"
+            "value" : "Ștergeți serviciul"
           }
         },
         "ru" : {
@@ -658,7 +646,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gereed"
+            "value" : "Voltooid"
           }
         },
         "pl" : {
@@ -695,6 +683,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tamamlandı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
           }
         }
       }
@@ -1147,6 +1141,12 @@
             "state" : "translated",
             "value" : "Nightscout"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nightscout"
+          }
         }
       }
     },
@@ -1235,6 +1235,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nightscout Oturum Açma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nightscout 登录"
           }
         }
       }
@@ -1406,7 +1412,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ok"
+            "value" : "OK"
           }
         },
         "pl" : {
@@ -1512,7 +1518,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One-Time Wachtwoord"
+            "value" : "One-Time wachtwoord"
           }
         },
         "pl" : {
@@ -1726,7 +1732,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geheime Sleutel resetten"
+            "value" : "Geheime sleutel resetten"
           }
         },
         "pl" : {
@@ -1751,6 +1757,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gizli Anahtarı Sıfırla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置密钥"
           }
         }
       }
@@ -2100,6 +2112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL 地址"
           }
         }
       }

@@ -101,7 +101,8 @@ extension StoredSettings {
             store: ["Default": profile],
             settings: loopSettings,
             syncIdentifier: syncIdentifier.uuidString,
-            isAPNSProduction: Bundle.main.isAPNSProductionEnvironment)
+            isAPNSProduction: Bundle.main.isAPNSProductionEnvironment,
+            timeZone: controllerTimeZone.identifier)
     }
 
 }

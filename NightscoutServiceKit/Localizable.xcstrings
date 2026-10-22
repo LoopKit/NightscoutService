@@ -60,6 +60,12 @@
             "state" : "translated",
             "value" : "Ввод болюса"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大剂量录入"
+          }
         }
       }
     },
@@ -129,7 +135,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annuleer Override"
+            "value" : "Annuleer override"
           }
         },
         "pl" : {
@@ -147,7 +153,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oprește înlocuirea"
+            "value" : "Anulați suprascriere"
           }
         },
         "ru" : {
@@ -236,7 +242,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Legg til karbohydrater"
+            "value" : "Legg inn karbohydrater"
           }
         },
         "nl" : {
@@ -254,7 +260,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cantitate CH"
+            "value" : "Intrare Carbohidrați"
           }
         },
         "ru" : {
@@ -349,7 +355,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aangepaste Override"
+            "value" : "Aangepaste override"
           }
         },
         "pl" : {
@@ -457,6 +463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Истек срок действия команды"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已过期"
           }
         }
       }
@@ -628,13 +640,19 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parola unică lipsește"
+            "value" : "Parola de unică folosință lipsește"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсутствует одноразовый пароль"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少一次性验证码 (OTP)"
           }
         }
       }
@@ -854,7 +872,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Înlocuire"
+            "value" : "Modificare"
           }
         },
         "ru" : {
@@ -1064,6 +1082,12 @@
             "state" : "translated",
             "value" : "Ед"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "U"
+          }
         }
       }
     },
@@ -1103,7 +1127,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Onverwerkte Melding: %1$@"
+            "value" : "Onverwerkte melding: %1$@"
           }
         },
         "pl" : {
@@ -1122,6 +1146,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Необработанное уведомление: %1$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未处理通知：%1$@"
           }
         }
       }
@@ -1193,7 +1223,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Training"
+            "value" : "Training/sport"
           }
         },
         "pl" : {
