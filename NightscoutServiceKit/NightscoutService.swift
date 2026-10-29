@@ -50,6 +50,9 @@ public final class NightscoutService: Service {
     }
     private let lockedObjectIdCache: Locked<ObjectIdCache>
 
+    /// The last profile uploaded, without its dates, so an unchanged profile isn't uploaded again
+    private let lastUploadedProfile: Locked<String?>
+
     private var _uploader: NightscoutClient?
 
     private var uploader: NightscoutClient? {
@@ -69,6 +72,7 @@ public final class NightscoutService: Service {
     public init() {
         self.isOnboarded = false
         self.lockedObjectIdCache = Locked(ObjectIdCache())
+        self.lastUploadedProfile = Locked(nil)
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
         self.commandSourceV1.delegate = self
@@ -84,7 +88,9 @@ public final class NightscoutService: Service {
         } else {
             self.lockedObjectIdCache = Locked(ObjectIdCache())
         }
-        
+
+        self.lastUploadedProfile = Locked(rawState["lastUploadedProfile"] as? String)
+
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
         self.commandSourceV1.delegate = self
@@ -93,10 +99,12 @@ public final class NightscoutService: Service {
     }
 
     public var rawState: RawStateValue {
-        return [
+        var rawState: RawStateValue = [
             "isOnboarded": isOnboarded,
             "objectIdCache": objectIdCache.rawValue
         ]
+        rawState["lastUploadedProfile"] = lastUploadedProfile.value
+        return rawState
     }
 
     public var lastDosingDecisionForAutomaticDose: StoredDosingDecision?
@@ -125,6 +133,7 @@ public final class NightscoutService: Service {
     }
 
     public func completeUpdate() {
+        lastUploadedProfile.value = nil
         saveCredentials()
         stateDelegate?.pluginDidUpdateState(self)
     }
@@ -370,8 +379,22 @@ extension NightscoutService: RemoteDataService {
             return
         }
 
+        var previous = lastUploadedProfile.value
+        var changed: [ProfileSet] = []
+        for profileSet in stored.compactMap({ $0.profileSet }) {
+            let content = Self.profileContent(profileSet)
+            if content == nil || content != previous {
+                changed.append(profileSet)
+                previous = content
+            }
+        }
+
+        guard !changed.isEmpty else {
+            return
+        }
+
         try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
-            uploader.uploadProfiles(stored.compactMap { $0.profileSet }) { result in
+            uploader.uploadProfiles(changed) { result in
                 switch result {
                 case .success:
                     continuation.resume()
@@ -380,6 +403,19 @@ extension NightscoutService: RemoteDataService {
                 }
             }
         })
+
+        lastUploadedProfile.value = previous
+        stateDelegate?.pluginDidUpdateState(self)
+    }
+
+    static func profileContent(_ profileSet: ProfileSet) -> String? {
+        var representation = profileSet.dictionaryRepresentation
+        representation["startDate"] = nil
+        representation["mills"] = nil
+        guard let data = try? JSONSerialization.data(withJSONObject: representation, options: .sortedKeys) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
     }
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {

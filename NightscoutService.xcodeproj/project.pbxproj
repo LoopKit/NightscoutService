@@ -11,6 +11,7 @@
 		657F99DF2F0BC17B00F732BD /* APNSJWTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657F99DB2F0BC17B00F732BD /* APNSJWTManager.swift */; };
 		657F99E02F0BC17B00F732BD /* OTPSecureMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657F99DC2F0BC17B00F732BD /* OTPSecureMessenger.swift */; };
 		657F99E32F0BC17B00F732BD /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 657F99E22F0BC17B00F732BD /* SwiftJWT */; };
+		70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */; };
 		A90E399E22BC76DB0016DFE8 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */; };
 		A90E39A122BC773A0016DFE8 /* NightscoutUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */; };
 		A90E39A322BC782C0016DFE8 /* SyncCarbObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */; };
@@ -140,6 +141,7 @@
 		657F99DB2F0BC17B00F732BD /* APNSJWTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNSJWTManager.swift; sourceTree = "<group>"; };
 		657F99DC2F0BC17B00F732BD /* OTPSecureMessenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPSecureMessenger.swift; sourceTree = "<group>"; };
 		657F99DD2F0BC17B00F732BD /* RemoteNotificationResponseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNotificationResponseManager.swift; sourceTree = "<group>"; };
+		98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProfileContentTests.swift; sourceTree = "<group>"; };
 		A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutUploader.swift; sourceTree = "<group>"; };
 		A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCarbObject.swift; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				A941B09729BD4ACA00F91340 /* OverrideCancelRemoteNotificationTestCase.swift */,
 				A941B09829BD4ACA00F91340 /* OverrideRemoteNotificationTestCase.swift */,
 				A95F887326C694E800D8A009 /* NightscoutServiceKitTests-Bridging-Header.h */,
+				98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */,
 			);
 			path = NightscoutServiceKitTests;
 			sourceTree = "<group>";
@@ -754,6 +757,7 @@
 				A941B09929BD4ACA00F91340 /* BolusRemoteNotificationTestCase.swift in Sources */,
 				A941B09B29BD4ACA00F91340 /* OverrideCancelRemoteNotificationTestCase.swift in Sources */,
 				A95F887526C694E900D8A009 /* OTPManagerTestCase.swift in Sources */,
+				70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
