@@ -30,7 +30,7 @@ extension OverrideTreatment {
         case .custom:
             reason = NSLocalizedString("Custom Override", comment: "Name of custom override")
         case .activity(let activity):
-            reason = activity.activityType.name + NSLocalizedString("Activity", comment: "Suffix added to the name of an activity override")
+            reason = String(format: NSLocalizedString("%@ Activity", comment: "Name of an activity override (1: activity type name)"), activity.activityType.name)
         case .preMeal:
             reason = NSLocalizedString("Pre-Meal", comment: "Name of pre-meal override")
         case .preset(let preset):

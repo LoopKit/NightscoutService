@@ -1,8 +1,8 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Activity" : {
-      "comment" : "Suffix added to the name of an activity override"
+    "%@ Activity" : {
+      "comment" : "Name of an activity override (1: activity type name)"
     },
     "Bolus Entry" : {
       "comment" : "The remote action name for Bolus Entry",
