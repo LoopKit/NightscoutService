@@ -33,8 +33,10 @@ private extension HKUnit {
 
 extension ProfileSet {
     var therapySettings: TherapySettings? {
+        let profileSettings: LoopSettings? = settings
 
-        guard let profile = store["Default"],
+        guard let profile = store[defaultProfile] ?? store["Default"],
+              let settings = profileSettings,
               let glucoseSafetyLimit = settings.minimumBGGuard,
               let settingsGlucoseUnit = HKUnit.glucoseUnitFromNightscoutUnitString(units)
         else {
