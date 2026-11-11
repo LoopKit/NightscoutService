@@ -7,12 +7,17 @@
 //
 
 import Foundation
+import LoopKit
 
 public enum Action: Codable {
     case temporaryScheduleOverride(OverrideAction)
     case cancelTemporaryOverride(OverrideCancelAction)
     case bolusEntry(BolusAction)
     case carbsEntry(CarbAction)
+    case profileSwitch(ProfileSwitchAction)
+    case profileSave(ProfileSaveAction)
+    case profileDelete(ProfileDeleteAction)
+    case scheduledSwitchesSave(ScheduledSwitchesSaveAction)
     
     public var description: String {
         return "\(actionName) \(actionParameterDescription)"
@@ -28,6 +33,14 @@ public enum Action: Codable {
             return LocalizedString("Cancel Override", comment: "The remote action name for Cancel Override")
         case .temporaryScheduleOverride:
             return LocalizedString("Override", comment: "The remote action name for Override")
+        case .profileSwitch:
+            return LocalizedString("Profile Switch", comment: "The remote action name for Profile Switch")
+        case .profileSave:
+            return LocalizedString("Profile Save", comment: "The remote action name for Profile Save")
+        case .profileDelete:
+            return LocalizedString("Profile Delete", comment: "The remote action name for Profile Delete")
+        case .scheduledSwitchesSave:
+            return LocalizedString("Scheduled Switches Save", comment: "The remote action name for saving the scheduled profile switches")
         }
     }
     
@@ -43,6 +56,14 @@ public enum Action: Codable {
             return ""
         case .temporaryScheduleOverride(let overrideAction):
             return overrideAction.name
+        case .profileSwitch(let action):
+            return action.name
+        case .profileSave(let action):
+            return action.name
+        case .profileDelete(let action):
+            return action.name
+        case .scheduledSwitchesSave:
+            return ""
         }
     }
     
@@ -59,4 +80,75 @@ public enum Action: Codable {
         formatter.numberStyle = .decimal
         return formatter
     }()
+}
+
+extension Action {
+    /// The name of the profile a therapy profile command targets; for a rename, the new name. Nil for other commands.
+    var therapyProfileName: String? {
+        switch self {
+        case .profileSwitch(let action):
+            return action.name
+        case .profileSave(let action):
+            return action.name
+        case .profileDelete(let action):
+            return action.name
+        case .temporaryScheduleOverride, .cancelTemporaryOverride, .bolusEntry, .carbsEntry, .scheduledSwitchesSave:
+            return nil
+        }
+    }
+
+    private var therapyProfileOutcome: String? {
+        switch self {
+        case .profileSwitch:
+            return "activated"
+        case .profileSave:
+            return "saved"
+        case .profileDelete:
+            return "deleted"
+        case .scheduledSwitchesSave:
+            return "saved"
+        case .temporaryScheduleOverride, .cancelTemporaryOverride, .bolusEntry, .carbsEntry:
+            return nil
+        }
+    }
+
+    /// The reply text for a therapy profile command that succeeded, or nil for other commands.
+    var therapyProfileSuccessMessage: String? {
+        if case .scheduledSwitchesSave = self {
+            return "Scheduled switches saved"
+        }
+        guard let name = therapyProfileName, let outcome = therapyProfileOutcome else {
+            return nil
+        }
+        return "Profile '\(name)' \(outcome)"
+    }
+
+    /// The reply text for a therapy profile command that failed, or nil for other commands.
+    func therapyProfileFailureMessage(for error: Error) -> String? {
+        if case .scheduledSwitchesSave = self {
+            return "Scheduled switches not saved: \(error.localizedDescription)"
+        }
+        guard let name = therapyProfileName, let outcome = therapyProfileOutcome else {
+            return nil
+        }
+        return "Profile '\(name)' not \(outcome): \(error.localizedDescription)"
+    }
+
+    /// The reply's `result` code for a therapy profile command (`activated`, `saved`, `deleted`, `conflict`,
+    /// `not_found` or `rejected`), or nil for other commands.
+    func therapyProfileResult(failure: Error?) -> String? {
+        guard let outcome = therapyProfileOutcome else {
+            return nil
+        }
+        switch failure {
+        case nil:
+            return outcome
+        case TherapyProfileError.conflict?, ScheduledProfileSwitchError.conflict?:
+            return "conflict"
+        case TherapyProfileError.notFound(_)?:
+            return "not_found"
+        default:
+            return "rejected"
+        }
+    }
 }

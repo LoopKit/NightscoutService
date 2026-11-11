@@ -53,6 +53,9 @@ public final class NightscoutService: Service {
     /// The last profile uploaded, without its dates, so an unchanged profile isn't uploaded again
     private let lastUploadedProfile: Locked<String?>
 
+    /// The remote profile commands, listed in the uploaded profile set as `remoteCommands`
+    static let remoteProfileCommands = [ProfileSwitchRemoteNotification.commandKey, ProfileSaveRemoteNotification.commandKey, ProfileDeleteRemoteNotification.commandKey, ScheduledSwitchesSaveRemoteNotification.commandKey]
+
     private var _uploader: NightscoutClient?
 
     private var uploader: NightscoutClient? {
@@ -379,18 +382,14 @@ extension NightscoutService: RemoteDataService {
             return
         }
 
-        var previous = lastUploadedProfile.value
-        var changed: [ProfileSet] = []
-        for profileSet in stored.compactMap({ $0.profileSet }) {
-            let content = Self.profileContent(profileSet)
-            if content == nil || content != previous {
-                changed.append(profileSet)
-                previous = content
-            }
-        }
+        let (changed, switches, previous) = Self.profileUploads(for: stored, after: lastUploadedProfile.value)
 
         guard !changed.isEmpty else {
             return
+        }
+
+        if !switches.isEmpty {
+            try await upload(switches, uploader: uploader)
         }
 
         try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
@@ -418,7 +417,52 @@ extension NightscoutService: RemoteDataService {
         return String(data: data, encoding: .utf8)
     }
     
-    public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
+    /// The profile sets that differ from the one uploaded before them, a Profile Switch treatment for each change of the
+    /// active profile (a rename is not one), and the content of the last profile set.
+    static func profileUploads(for stored: [StoredSettings], after lastUploaded: String?) -> (profileSets: [ProfileSet], switches: [ProfileSwitchNightscoutTreatment], lastUploaded: String?) {
+        var previous = lastUploaded
+        var previousActiveProfile = lastUploaded.flatMap(activeProfileName(inContent:))
+        var profileSets: [ProfileSet] = []
+        var switches: [ProfileSwitchNightscoutTreatment] = []
+        for settings in stored {
+            guard let profileSet = settings.profileSet else {
+                continue
+            }
+            let content = profileContent(profileSet)
+            guard content == nil || content != previous else {
+                continue
+            }
+            if let previousActiveProfile, previousActiveProfile != profileSet.defaultProfile, profileSet.store[previousActiveProfile] != nil {
+                switches.append(ProfileSwitchNightscoutTreatment(timestamp: profileSet.startDate, enteredBy: "Loop", profile: profileSet.defaultProfile, notes: settings.profileSwitchNotes, syncIdentifier: profileSet.syncIdentifier))
+            }
+            profileSets.append(profileSet)
+            previous = content
+            previousActiveProfile = profileSet.defaultProfile
+        }
+        return (profileSets, switches, previous)
+    }
+
+    private static func activeProfileName(inContent content: String) -> String? {
+        guard let json = try? JSONSerialization.jsonObject(with: Data(content.utf8)) as? [String: Any] else {
+            return nil
+        }
+        return json["defaultProfile"] as? String
+    }
+
+    private func upload(_ treatments: [NightscoutTreatment], uploader: NightscoutClient) async throws {
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.upload(treatments) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        })
+    }
+    
+    public func fetchStoredTherapySettings(completion: @escaping (Result<ImportedTherapySettings, Error>) -> Void) {
         guard let uploader = uploader else {
             completion(.failure(NightscoutServiceError.missingCredentials))
             return
@@ -427,8 +471,8 @@ extension NightscoutService: RemoteDataService {
         uploader.fetchCurrentProfile(completion: { result in
             switch result {
             case .success(let profileSet):
-                if let therapySettings = profileSet.therapySettings {
-                    completion(.success((therapySettings,profileSet.startDate)))
+                if let importedTherapySettings = profileSet.importedTherapySettings {
+                    completion(.success(importedTherapySettings))
                 } else {
                     completion(.failure(NightscoutServiceError.incompatibleTherapySettings))
                 }
@@ -517,16 +561,48 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                 )
                 success = true
                 message = String(format: "Carbs entry of %.1f g delivered successfully", carbCommand.amountInGrams)
+
+            case .profileSwitch(let profileCommand):
+                commandType = .profileSwitch
+                try await self.serviceDelegate?.switchRemoteTherapyProfile(name: profileCommand.name, expectedFingerprint: profileCommand.fingerprint)
+                success = true
+                message = action.therapyProfileSuccessMessage ?? ""
+
+            case .profileSave(let profileCommand):
+                commandType = .profileSave
+                if profileCommand.originalName != nil && profileCommand.baseFingerprint == nil {
+                    throw RemoteProfileCommandError.missingFingerprint
+                }
+                let profile = try TherapyProfile(name: profileCommand.name, compactValues: profileCommand.values, timeZone: .current)
+                try await self.serviceDelegate?.saveRemoteTherapyProfile(profile, originalName: profileCommand.originalName, expectedFingerprint: profileCommand.baseFingerprint)
+                success = true
+                message = action.therapyProfileSuccessMessage ?? ""
+
+            case .profileDelete(let profileCommand):
+                commandType = .profileDelete
+                try await self.serviceDelegate?.deleteRemoteTherapyProfile(name: profileCommand.name, expectedFingerprint: profileCommand.fingerprint)
+                success = true
+                message = action.therapyProfileSuccessMessage ?? ""
+
+            case .scheduledSwitchesSave(let scheduledSwitchesCommand):
+                commandType = .scheduledSwitchesSave
+                guard let baseFingerprint = scheduledSwitchesCommand.baseFingerprint else {
+                    throw RemoteProfileCommandError.missingScheduledSwitchesFingerprint
+                }
+                try await self.serviceDelegate?.saveRemoteScheduledProfileSwitches(scheduledSwitchesCommand.entries, expectedFingerprint: baseFingerprint)
+                success = true
+                message = action.therapyProfileSuccessMessage ?? ""
             }
         } catch {
-            message = "Command failed: \(error.localizedDescription)"
+            message = action.therapyProfileFailureMessage(for: error) ?? "Command failed: \(error.localizedDescription)"
             // Send failure response before rethrowing
             if let returnInfo = returnInfo {
                 await RemoteNotificationResponseManager.shared.sendResponseNotification(
                     to: returnInfo,
                     commandType: commandType,
                     success: false,
-                    message: message
+                    message: message,
+                    result: action.therapyProfileResult(failure: error)
                 )
             }
             throw error
@@ -538,30 +614,45 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                 to: returnInfo,
                 commandType: commandType,
                 success: success,
-                message: message
+                message: message,
+                result: action.therapyProfileResult(failure: nil)
             )
         }
     }
     
     func commandSourceV1(_: RemoteCommandSourceV1, uploadError error: Error, notification: [String: AnyObject]) async throws {
         
-        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
         var commandDescription = "Loop Remote Action Error"
+        var errorDescription = error.localizedDescription
         if let remoteNotification = try? notification.toRemoteNotification() {
-            commandDescription = remoteNotification.toRemoteAction().description
+            let action = remoteNotification.toRemoteAction()
+            commandDescription = action.description
+            if let message = action.therapyProfileFailureMessage(for: error) {
+                errorDescription = message
+                // A command that was handled has had its response; one refused before, such as an expired command
+                // or a wrong OTP, gets it here.
+                if error is RemoteCommandValidator.NotificationValidationError || error is OTPManager.OTPValidationError {
+                    await RemoteNotificationResponseManager.shared.sendResponseNotification(to: remoteNotification.getReturnNotificationInfo(), commandType: .init(action: action), success: false, message: message, result: action.therapyProfileResult(failure: error))
+                }
+            }
         }
         
         let notificationJSON = try JSONSerialization.data(withJSONObject: notification)
         let notificationJSONString = String(data: notificationJSON, encoding: .utf8) ?? ""
         
         let noteBody = """
-        \(error.localizedDescription)
+        \(errorDescription)
         \(notificationJSONString)
         """
+        try await uploadNote(enteredBy: commandDescription, notes: noteBody)
+    }
+
+    private func uploadNote(enteredBy: String, notes noteBody: String) async throws {
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
 
         let treatment = NightscoutTreatment(
             timestamp: Date(),
-            enteredBy: commandDescription,
+            enteredBy: enteredBy,
             notes: noteBody,
             eventType: .note
         )

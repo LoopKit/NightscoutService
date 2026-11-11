@@ -93,18 +93,68 @@ extension StoredSettings {
             return nil
         }
 
+        // One store entry per profile. The active profile's entry is the live settings.
+        let unit = glucoseTargetRangeSchedule?.unit ?? bloodGlucoseUnit
+        let activeName = TherapyProfiles.activeName(activeProfileName)
+        var store: [String: ProfileSet.Profile] = [:]
+        for therapyProfile in resolvedTherapyProfiles {
+            guard let storeProfile = therapyProfile.nightscoutProfile(unit: unit) else {
+                return nil
+            }
+            store[therapyProfile.name] = storeProfile
+        }
+        store[activeName] = profile
+        let editLimits = therapyProfileValidator?.editLimits(unit: unit)
+
         return ProfileSet(
             startDate: date,
             units: bloodGlucoseUnit.shortLocalizedUnitString(avoidLineBreaking: false),
             enteredBy: "Loop",
-            defaultProfile: "Default",
-            store: ["Default": profile],
+            defaultProfile: activeName,
+            store: store,
             settings: loopSettings,
             syncIdentifier: syncIdentifier.uuidString,
             isAPNSProduction: Bundle.main.isAPNSProductionEnvironment,
-            timeZone: controllerTimeZone.identifier)
+            timeZone: controllerTimeZone.identifier,
+            profileEditLimits: editLimits.map { ProfileEditLimits($0) },
+            // Remote profile commands need remote notifications, a pump and a maximum basal rate.
+            remoteCommands: deviceToken != nil && editLimits != nil ? NightscoutService.remoteProfileCommands : nil,
+            scheduledSwitches: scheduledSwitches.map { ProfileSet.ScheduledSwitch(id: $0.id, profile: $0.profileName, weekday: $0.weekday, time: Int($0.time), paused: $0.paused) },
+            scheduledSwitchesFingerprint: ScheduledProfileSwitches.fingerprint(scheduledSwitches))
     }
 
+    /// The note of the Profile Switch treatment for a switch to these settings' active profile.
+    var profileSwitchNotes: String? {
+        switch activeProfileSwitchTrigger {
+        case .scheduled?:
+            return "Scheduled"
+        case .remote?:
+            return "Remote"
+        default:
+            return nil
+        }
+    }
+}
+
+extension ProfileEditLimits {
+    init(_ limits: TherapyProfileEditLimits) {
+        func valueLimits(_ value: TherapyProfileEditLimits.ValueLimits) -> ValueLimits {
+            ValueLimits(min: value.bounds.lowerBound,
+                        max: value.bounds.upperBound,
+                        step: value.step,
+                        recommendedMin: value.recommended?.lowerBound,
+                        recommendedMax: value.recommended?.upperBound)
+        }
+        self.init(units: limits.unit.shortLocalizedUnitString(avoidLineBreaking: false),
+                  maxBasal: limits.maximumBasalRatePerHour,
+                  basalRates: limits.basalRates,
+                  maxBasalSegments: limits.maximumBasalScheduleEntryCount,
+                  carbRatio: valueLimits(limits.carbRatio),
+                  sensitivity: valueLimits(limits.sensitivity),
+                  target: valueLimits(limits.target),
+                  maxSegments: limits.maximumScheduleEntryCount,
+                  segmentSeconds: Int(limits.segmentInterval))
+    }
 }
 
 fileprivate extension Array where Element == RepeatingScheduleValue<Double> {
