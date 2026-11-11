@@ -108,6 +108,14 @@ extension Dictionary<String, AnyObject> {
             return try OverrideRemoteNotification(dictionary: self)
         } else if OverrideCancelRemoteNotification.includedInNotification(self) {
             return try OverrideCancelRemoteNotification(dictionary: self)
+        } else if ProfileSwitchRemoteNotification.includedInNotification(self) {
+            return try ProfileSwitchRemoteNotification(dictionary: self)
+        } else if ProfileSaveRemoteNotification.includedInNotification(self) {
+            return try ProfileSaveRemoteNotification(dictionary: self)
+        } else if ProfileDeleteRemoteNotification.includedInNotification(self) {
+            return try ProfileDeleteRemoteNotification(dictionary: self)
+        } else if ScheduledSwitchesSaveRemoteNotification.includedInNotification(self) {
+            return try ScheduledSwitchesSaveRemoteNotification(dictionary: self)
         } else {
             throw RemoteNotificationError.unhandledNotification(self)
         }

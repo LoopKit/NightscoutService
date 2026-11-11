@@ -20,12 +20,15 @@ class RemoteNotificationResponseManager {
         let aps: APSPayload
         let commandStatus: String
         let commandType: String
+        /// A code the caller can match on, independent of the alert text's language; only for some commands.
+        let result: String?
         let timestamp: TimeInterval
         
         enum CodingKeys: String, CodingKey {
             case aps
             case commandStatus = "command_status"
             case commandType = "command_type"
+            case result
             case timestamp
         }
     }
@@ -45,13 +48,39 @@ class RemoteNotificationResponseManager {
         case carbs = "carbs"
         case override = "override"
         case cancelOverride = "cancel_override"
+        case profileSwitch = "profile_switch"
+        case profileSave = "profile_save"
+        case profileDelete = "profile_delete"
+        case scheduledSwitchesSave = "profile_scheduled_switches_save"
+
+        init(action: Action) {
+            switch action {
+            case .bolusEntry:
+                self = .bolus
+            case .carbsEntry:
+                self = .carbs
+            case .temporaryScheduleOverride:
+                self = .override
+            case .cancelTemporaryOverride:
+                self = .cancelOverride
+            case .profileSwitch:
+                self = .profileSwitch
+            case .profileSave:
+                self = .profileSave
+            case .profileDelete:
+                self = .profileDelete
+            case .scheduledSwitchesSave:
+                self = .scheduledSwitchesSave
+            }
+        }
     }
     
     func sendResponseNotification(
         to returnInfo: ReturnNotificationInfo?,
         commandType: CommandType,
         success: Bool,
-        message: String
+        message: String,
+        result: String? = nil
     ) async {
         guard let returnInfo = returnInfo else {
             os_log("No return notification info provided, skipping response", log: log, type: .info)
@@ -65,17 +94,7 @@ class RemoteNotificationResponseManager {
         
         os_log("Sending response notification - Type: %{public}@, Status: %{public}@, Message: %{public}@, DeviceToken: %{public}@", log: log, type: .info, commandType.rawValue, success ? "success" : "failed", message, returnInfo.deviceToken)
         
-        let payload = NotificationPayload(
-            aps: APSPayload(
-                alert: Alert(
-                    title: success ? "Command Successful" : "Command Failed",
-                    body: message
-                )
-            ),
-            commandStatus: success ? "success" : "failed",
-            commandType: commandType.rawValue,
-            timestamp: Date().timeIntervalSince1970
-        )
+        let payload = Self.payload(commandType: commandType, success: success, message: message, result: result)
         
         await sendPushNotification(
             payload: payload,
@@ -84,6 +103,21 @@ class RemoteNotificationResponseManager {
         )
     }
     
+    static func payload(commandType: CommandType, success: Bool, message: String, result: String?, date: Date = Date()) -> NotificationPayload {
+        NotificationPayload(
+            aps: APSPayload(
+                alert: Alert(
+                    title: success ? "Command Successful" : "Command Failed",
+                    body: message
+                )
+            ),
+            commandStatus: success ? "success" : "failed",
+            commandType: commandType.rawValue,
+            result: result,
+            timestamp: date.timeIntervalSince1970
+        )
+    }
+
     private func sendPushNotification(
         payload: NotificationPayload,
         to deviceToken: String,
