@@ -13,6 +13,7 @@
 		657F99E32F0BC17B00F732BD /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 657F99E22F0BC17B00F732BD /* SwiftJWT */; };
 		70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */; };
 		C3A1D7E52F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1D7E42F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift */; };
+		D05E1A052F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05E1A042F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift */; };
 		A90E399E22BC76DB0016DFE8 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */; };
 		A90E39A122BC773A0016DFE8 /* NightscoutUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */; };
 		A90E39A322BC782C0016DFE8 /* SyncCarbObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */; };
@@ -144,6 +145,7 @@
 		657F99DD2F0BC17B00F732BD /* RemoteNotificationResponseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNotificationResponseManager.swift; sourceTree = "<group>"; };
 		98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProfileContentTests.swift; sourceTree = "<group>"; };
 		C3A1D7E42F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideTreatmentTests.swift; sourceTree = "<group>"; };
+		D05E1A042F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoseTreatmentTests.swift; sourceTree = "<group>"; };
 		A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutUploader.swift; sourceTree = "<group>"; };
 		A90E39A222BC782C0016DFE8 /* SyncCarbObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCarbObject.swift; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				A95F887326C694E800D8A009 /* NightscoutServiceKitTests-Bridging-Header.h */,
 				98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */,
 				C3A1D7E42F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift */,
+				D05E1A042F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift */,
 			);
 			path = NightscoutServiceKitTests;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				A95F887526C694E900D8A009 /* OTPManagerTestCase.swift in Sources */,
 				70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */,
 				C3A1D7E52F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift in Sources */,
+				D05E1A052F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
