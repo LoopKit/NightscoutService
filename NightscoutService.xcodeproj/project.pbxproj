@@ -69,6 +69,8 @@
 		C1398D2027C41E3D00416AD6 /* ProfileSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1398D1F27C41E3D00416AD6 /* ProfileSet.swift */; };
 		C1398D2227C434FB00416AD6 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1398D2127C434FB00416AD6 /* Data.swift */; };
 		C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */; };
+		E7A1D0012F1B4A0E00A1B2C3 /* StoredWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A1D0002F1B4A0E00A1B2C3 /* StoredWorkout.swift */; };
+		E7A1D0032F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */; };
 		C1B9ACF827DE987400857532 /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = C1B9ACF727DE987400857532 /* OneTimePassword */; };
 		C1C1349627DD35060097B5AD /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349527DD35060097B5AD /* LoopKit.framework */; };
 		C1C1349827DD35260097B5AD /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349727DD35260097B5AD /* LoopKitUI.framework */; };
@@ -204,6 +206,8 @@
 		C1398D1F27C41E3D00416AD6 /* ProfileSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSet.swift; sourceTree = "<group>"; };
 		C1398D2127C434FB00416AD6 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistedCgmEvent.swift; sourceTree = "<group>"; };
+		E7A1D0002F1B4A0E00A1B2C3 /* StoredWorkout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredWorkout.swift; sourceTree = "<group>"; };
+		E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTreatmentTests.swift; sourceTree = "<group>"; };
 		C1B9ACFF27DE9AD800857532 /* Crypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crypto.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1C1349527DD35060097B5AD /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1C1349727DD35260097B5AD /* LoopKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -268,6 +272,7 @@
 				C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */,
 				C1E10F002ABF3B190036A416 /* PersistedPumpEvent.swift */,
 				C1398D1F27C41E3D00416AD6 /* ProfileSet.swift */,
+				E7A1D0002F1B4A0E00A1B2C3 /* StoredWorkout.swift */,
 				A934B6152358F42A00949C8B /* StoredDosingDecision.swift */,
 				A94DA7632353CF930082E26D /* StoredGlucoseSample.swift */,
 				A934B6172358F49300949C8B /* StoredSettings.swift */,
@@ -331,6 +336,7 @@
 				98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */,
 				C3A1D7E42F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift */,
 				D05E1A042F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift */,
+				E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */,
 			);
 			path = NightscoutServiceKitTests;
 			sourceTree = "<group>";
@@ -719,6 +725,7 @@
 				A9AA6E5B29EB072E008FFA78 /* OverrideAction.swift in Sources */,
 				A941B09129BD4A9E00F91340 /* BolusRemoteNotification.swift in Sources */,
 				C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */,
+				E7A1D0012F1B4A0E00A1B2C3 /* StoredWorkout.swift in Sources */,
 				A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */,
 				A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */,
 				A9AA6E6429EB07D7008FFA78 /* CarbAction.swift in Sources */,
@@ -766,6 +773,7 @@
 				70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */,
 				C3A1D7E52F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift in Sources */,
 				D05E1A052F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift in Sources */,
+				E7A1D0032F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
