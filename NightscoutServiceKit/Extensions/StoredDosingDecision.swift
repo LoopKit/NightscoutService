@@ -159,8 +159,22 @@ extension StoredDosingDecision {
                                    automaticDoseRecommendation: loopStatusAutomaticDoseRecommendation,
                                    recommendedBolus: loopStatusRecommendedBolus,
                                    enacted: automaticDoseDecision?.loopStatusEnacted,
-                                   failureReason: automaticDoseDecision?.loopStatusFailureReason),
+                                   failureReason: automaticDoseDecision?.loopStatusFailureReason,
+                                   build: loopStatusBuild),
             overrideStatus: overrideStatus)
+    }
+
+    var loopStatusBuild: [String: String]? {
+        guard let build = controllerStatus?.build else {
+            return nil
+        }
+        return [
+            "version": build.version,
+            "buildNumber": build.buildNumber,
+            "workspaceBranch": build.workspaceBranch,
+            "workspaceRevision": build.workspaceRevision,
+            "buildDate": build.buildDate,
+        ].compactMapValues { $0 }
     }
     
 }
