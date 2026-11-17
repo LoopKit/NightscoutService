@@ -442,6 +442,39 @@ extension NightscoutService: RemoteDataService {
         })
     }
 
+    public var exerciseDataLimit: Int? { return 100 }
+
+    public var exerciseDataDescription: String? {
+        LocalizedString("Nightscout receives your workouts and shows them as Exercise treatments.", comment: "What Nightscout does with exercise data, shown with the exercise data setting")
+    }
+
+    public func uploadExerciseData(added: [StoredWorkout], deleted: [UUID]) async throws {
+        guard hasConfiguration, let uploader = uploader else {
+            return
+        }
+
+        let source = "loop://\(await UIDevice.current.name)"
+        let treatments = added.map { $0.treatment(enteredBy: source) }
+        let deletions = deleted.map(\.uuidString)
+
+        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+            uploader.deleteTreatmentsById(deletions) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                uploader.upload(treatments) { result in
+                    switch result {
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    case .success:
+                        continuation.resume()
+                    }
+                }
+            }
+        })
+    }
+
     public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent]) async throws {
         guard hasConfiguration, let uploader = uploader else {
             return

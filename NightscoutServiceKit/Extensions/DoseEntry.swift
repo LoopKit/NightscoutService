@@ -27,9 +27,11 @@ extension DoseEntry {
                 unabsorbed: 0,  // The pump's reported IOB isn't relevant, nor stored
                 duration: duration,
                 automatic: automatic ?? false,
+                notes: bolusOrigin?.note,
                 /* id: objectId, */ /// Specifying _id only works when doing a put (modify); all dose uploads are currently posting so they can be either create or update
                 syncIdentifier: syncIdentifier,
-                insulinType: insulinType?.brandName
+                insulinType: insulinType?.brandName,
+                bolusOrigin: bolusOrigin?.rawValue
             )
         case .resume:
             return nil
@@ -65,4 +67,29 @@ extension DoseEntry {
         }
     }
 
+    /// Values shared with Trio's `bolusOrigin`; automatic boluses have none.
+    enum BolusOrigin: String {
+        case remote
+        case watch
+        case manual
+
+        var note: String {
+            switch self {
+            case .remote: return "Remote bolus"
+            case .watch: return "Watch bolus"
+            case .manual: return "Manual bolus"
+            }
+        }
+    }
+
+    var bolusOrigin: BolusOrigin? {
+        switch metadata?.origin {
+        case .remote:
+            return .remote
+        case .user:
+            return metadata?.device == .watch ? .watch : .manual
+        default:
+            return nil
+        }
+    }
 }
