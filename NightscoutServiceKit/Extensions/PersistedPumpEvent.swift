@@ -18,7 +18,7 @@ extension PersistedPumpEvent {
         case .replaceComponent(let componentType):
             switch componentType {
             case .infusionSet, .pump:
-                return NightscoutTreatment(timestamp: date, enteredBy: source, notes: title, eventType: .siteChange)
+                return NightscoutTreatment(timestamp: date, enteredBy: source, notes: siteChangeNotes, eventType: .siteChange)
             default:
                 return nil
             }
@@ -27,5 +27,25 @@ extension PersistedPumpEvent {
         default:
             return nil
         }
+    }
+
+    var siteChangeNotes: String? {
+        let reason: String?
+        switch componentReplacement?.reason {
+        case .expired:
+            reason = "expired"
+        case .fault:
+            reason = ["fault", componentReplacement?.faultCode].compactMap { $0 }.joined(separator: " ")
+        case .occlusion:
+            reason = "occlusion"
+        case .userInitiated:
+            reason = "changed early"
+        case .unknown, nil:
+            reason = nil
+        }
+        guard let reason else {
+            return title
+        }
+        return [title, "Reason: \(reason)"].compactMap { $0 }.joined(separator: ", ")
     }
 }
