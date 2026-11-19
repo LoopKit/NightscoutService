@@ -31,6 +31,7 @@ final class CarbRemoteNotificationTestCase: XCTestCase {
         let expectedAbsorptionTimeInHours = 3.1
         let expectedFoodType = "🍕"
         let expectedOTP = "12345"
+        let expectedKnownThroughId = "63fa73a5c1f2a3b4c5d6e7f8"
 
         
         let notification: [String: Any] = [
@@ -41,7 +42,8 @@ final class CarbRemoteNotificationTestCase: XCTestCase {
             "carbs-entry": expectedCarbsInGrams,
             "absorption-time": expectedAbsorptionTimeInHours,
             "food-type": expectedFoodType,
-            "otp": expectedOTP
+            "otp": expectedOTP,
+            "known-through-id": expectedKnownThroughId
         ]
         
         //Act
@@ -57,6 +59,15 @@ final class CarbRemoteNotificationTestCase: XCTestCase {
         XCTAssertEqual(carbNotification.absorptionTime(), TimeInterval(hours: expectedAbsorptionTimeInHours))
         XCTAssertEqual(carbNotification.foodType, expectedFoodType)
         XCTAssertEqual(carbNotification.otp, expectedOTP)
+        XCTAssertEqual(carbNotification.knownThroughId, expectedKnownThroughId)
+        XCTAssertTrue(carbNotification.sentAtRequired())
+        
+        guard case .carbsEntry(let action) = carbNotification.toRemoteAction() else {
+            XCTFail("Unexpected action")
+            return
+        }
+        XCTAssertEqual(action.sentAt, expectedSentAtDate)
+        XCTAssertEqual(action.knownThroughId, expectedKnownThroughId)
     }
     
     

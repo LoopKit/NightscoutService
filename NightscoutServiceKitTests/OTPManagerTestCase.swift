@@ -45,6 +45,20 @@ class OTPManagerTestCase: XCTestCase {
         XCTAssertEqual(currentOTP, testCoordinator.currentOTP())
     }
 
+    func testValidOTPs_CoverTwelveMinutes() throws {
+        
+        //Arrange
+        let testCoordinator = OTPTestCoordinator()
+        let manager = testCoordinator.createOTPManager()
+        
+        //Act
+        let validOTPs = try manager.validOTPs()
+        
+        //Assert
+        XCTAssertEqual(validOTPs.count, 25)
+        XCTAssertEqual(validOTPs.last!.period.startDate.timeIntervalSince(validOTPs.first!.period.startDate), TimeInterval(12 * 60))
+    }
+
     func testValidatePassword_WhenOldestAcceptedPasswordUsed_Succeeds() throws {
         
         //Arrange
@@ -168,14 +182,18 @@ class OTPTestCoordinator: OTPSecretStore {
          1. Go to https://cryptotools.net/otp
          2. Paste the test secretKey below to site
          3. Capture the Epoch time from site
-         4. Capture 4 consecutive codes
+         4. Capture OTPManager.defaultMaxOTPsToAccept + 1 consecutive codes
          5. Update the startDate below
          6. Update otps below
 
          */
         
         let startDate = Date(timeIntervalSince1970: 1670001615).floor(precision: OTPManager.defaultTokenPeriod)
-        let passwords = ["306469", "649742", "881201", "086432"]
+        let passwords = [
+            "306469", "649742", "881201", "086432", "796177", "460219", "588427", "124765", "112064",
+            "378045", "216851", "410438", "444237", "558473", "038120", "857671", "472302", "904873",
+            "195964", "165276", "795680", "978758", "987421", "684774", "015648", "667473"
+        ]
         var otps = [OTP]()
         for (index, password) in passwords.enumerated() {
             let otpStartDate = startDate.addingTimeInterval(TimeInterval(index) * OTPManager.defaultTokenPeriod)

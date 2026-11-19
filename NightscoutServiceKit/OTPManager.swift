@@ -77,7 +77,7 @@ public class OTPManager {
     let maxOTPsToAccept: Int
     
     public static var defaultTokenPeriod: TimeInterval = 30
-    public static var defaultMaxOTPsToAccept = 2
+    public static var defaultMaxOTPsToAccept = 25
     
     public init(secretStore: OTPSecretStore = KeychainManager(), nowDateSource: @escaping () -> Date = {Date()}, tokenPeriod: TimeInterval = OTPManager.defaultTokenPeriod, maxOTPsToAccept: Int = OTPManager.defaultMaxOTPsToAccept) {
         self.secretStore = secretStore

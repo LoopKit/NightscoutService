@@ -48,7 +48,12 @@ class RemoteCommandSourceV1: RemoteCommandSource {
                 // https://github.com/LoopKit/Loop/issues/2174
                 return
             }
-            try commandValidator.validate(remoteNotification: remoteNotification)
+            do {
+                try commandValidator.validate(remoteNotification: remoteNotification)
+            } catch {
+                await delegate.commandSourceV1(self, validationError: error, remoteNotification: remoteNotification)
+                throw error
+            }
             try await delegate.commandSourceV1(self, handleAction: remoteNotification.toRemoteAction(), remoteNotification: remoteNotification)
         } catch {
             log.error("Remote Notification: %{public}@. Error: %{public}@", String(describing: notification), String(describing: error))
@@ -60,6 +65,8 @@ class RemoteCommandSourceV1: RemoteCommandSource {
 protocol RemoteCommandSourceV1Delegate: AnyObject {
     func commandSourceV1(_: RemoteCommandSourceV1, handleAction action: Action, remoteNotification: RemoteNotification) async throws
     func commandSourceV1(_: RemoteCommandSourceV1, uploadError error: Error, notification: [String: AnyObject]) async throws
+    /// Called when a command fails validation, before `uploadError`
+    func commandSourceV1(_: RemoteCommandSourceV1, validationError error: Error, remoteNotification: RemoteNotification) async
 }
 
 private actor RecentNotifications {
