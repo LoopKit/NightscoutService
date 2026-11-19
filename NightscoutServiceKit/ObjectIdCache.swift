@@ -53,7 +53,14 @@ public struct ObjectIdCache: RawRepresentable, Equatable {
         storageBySyncIdentifier = [:]
     }
         
+    /// A valid objectId is kept when the new one is not valid, as Nightscout answers a repeated upload without `_id`
     mutating func add(syncIdentifier: String, objectId: String) {
+        if Self.creationTime(ofObjectId: objectId) == nil,
+           let existing = storageBySyncIdentifier[syncIdentifier]?.nightscoutObjectId,
+           Self.creationTime(ofObjectId: existing) != nil
+        {
+            return
+        }
         let mapping = ObjectIDMapping(loopSyncIdentifier: syncIdentifier, nightscoutObjectId: objectId)
         storageBySyncIdentifier[syncIdentifier] = mapping
     }
@@ -64,6 +71,14 @@ public struct ObjectIdCache: RawRepresentable, Equatable {
     
     func findObjectIdBySyncIdentifier(_ syncIdentifier: String) -> String? {
         return storageBySyncIdentifier[syncIdentifier]?.nightscoutObjectId
+    }
+    
+    /// The creation time, in seconds since 1970, held in the first 4 bytes of a 24 hex digit ObjectId
+    static func creationTime(ofObjectId objectId: String) -> UInt32? {
+        guard objectId.count == 24, objectId.allSatisfy({ $0.isASCII && $0.isHexDigit }) else {
+            return nil
+        }
+        return UInt32(objectId.prefix(8), radix: 16)
     }
     
     // RawRepresentable
