@@ -214,8 +214,7 @@ extension NightscoutService: RemoteDataService {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let syncIdentifiers = created.map { $0.syncIdentifier }
-                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
+                    for (syncIdentifier, objectId) in createdObjectIds {
                         if let syncIdentifier = syncIdentifier {
                             self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
                         }
@@ -257,8 +256,7 @@ extension NightscoutService: RemoteDataService {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let syncIdentifiers = created.map { $0.syncIdentifier }
-                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
+                    for (syncIdentifier, objectId) in createdObjectIds {
                         if let syncIdentifier = syncIdentifier {
                             self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
                         }
