@@ -4,6 +4,21 @@
     "%@ Activity" : {
       "comment" : "Name of an activity override (1: activity type name)"
     },
+    "%1$@ has a malformed entry" : {
+      "comment" : "Remote profile error: malformed entry (1: setting name)"
+    },
+    "%1$@; its values are imported as the Default profile" : {
+      "comment" : "Nightscout profile import: the active profile's name is invalid (1: why the name is invalid)"
+    },
+    "%1$@; its values are imported as the Default profile and replace the stored Default profile" : {
+      "comment" : "Nightscout profile import: the active profile's name is invalid and a Default profile is stored (1: why the name is invalid)"
+    },
+    "A schedule could not be read" : {
+      "comment" : "Nightscout profile import error: schedule not built"
+    },
+    "Basal Rates" : {
+      "comment" : "Nightscout profile import schedule name: basal rates"
+    },
     "Bolus Entry" : {
       "comment" : "The remote action name for Bolus Entry",
       "localizations" : {
@@ -288,6 +303,12 @@
           }
         }
       }
+    },
+    "Carb Ratios" : {
+      "comment" : "Nightscout profile import schedule name: carb ratios"
+    },
+    "Correction Range" : {
+      "comment" : "Nightscout profile import schedule name: correction range"
     },
     "Custom Override" : {
       "comment" : "Name of custom override",
@@ -591,6 +612,12 @@
           }
         }
       }
+    },
+    "Insulin Sensitivities" : {
+      "comment" : "Nightscout profile import schedule name: insulin sensitivities"
+    },
+    "Loop keeps at most %1$d profiles" : {
+      "comment" : "Nightscout profile import: profile left out because of the profile limit (1: maximum number of profiles)"
     },
     "Missing OTP" : {
       "comment" : "Remote command error description: Missing OTP.",
@@ -1026,6 +1053,36 @@
         }
       }
     },
+    "Profile Delete" : {
+      "comment" : "The remote action name for Profile Delete"
+    },
+    "Profile Save" : {
+      "comment" : "The remote action name for Profile Save"
+    },
+    "Profile Switch" : {
+      "comment" : "The remote action name for Profile Switch"
+    },
+    "Scheduled switches are imported only when every profile they start is imported" : {
+      "comment" : "Nightscout profile import: a scheduled switch left out because another one is"
+    },
+    "Scheduled Switches Save" : {
+      "comment" : "The remote action name for saving the scheduled profile switches"
+    },
+    "The active profile is not in the profile document, so the Default profile's values are imported as the therapy settings" : {
+      "comment" : "Nightscout profile import: the document names an active profile it does not contain"
+    },
+    "The command has no fingerprint of the original profile" : {
+      "comment" : "Remote profile error: missing base fingerprint"
+    },
+    "The command has no fingerprint of the scheduled switches it replaces" : {
+      "comment" : "Remote scheduled switches error: missing base fingerprint"
+    },
+    "The correction range has different start times for its lower and upper values" : {
+      "comment" : "Nightscout profile import error: target low and high start times differ"
+    },
+    "The profile %1$@ is not imported" : {
+      "comment" : "Nightscout profile import: a scheduled switch to a profile that is left out (1: profile name)"
+    },
     "U" : {
       "comment" : "The remote action abbreviation for bolus units",
       "localizations" : {
@@ -1155,6 +1212,9 @@
           }
         }
       }
+    },
+    "units must be mg/dL or mmol/L" : {
+      "comment" : "Remote profile error: unknown units"
     },
     "Workout" : {
       "comment" : "Name of legacy workout override\nName uploaded to Nightscout for legacy workout override",
