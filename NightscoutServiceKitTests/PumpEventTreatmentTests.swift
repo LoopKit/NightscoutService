@@ -24,11 +24,12 @@ class PumpEventTreatmentTests: XCTestCase {
     }
 
     func testSiteChangeNotesIncludeTheReason() {
-        let json = podChange(ComponentReplacement(reason: .fault, faultCode: "0x5C")).treatment(source: "loop://iPhone")?.dictionaryRepresentation
+        let json = podChange(ComponentReplacement(previous: .init(reason: .fault(code: "0x5C")))).treatment(source: "loop://iPhone")?.dictionaryRepresentation
         XCTAssertEqual(json?["eventType"] as? String, "Site Change")
         XCTAssertEqual(json?["notes"] as? String, "Pod Change (Omnipod DASH), Reason: fault 0x5C")
 
-        XCTAssertEqual(podChange(ComponentReplacement(reason: .userInitiated)).siteChangeNotes, "Pod Change (Omnipod DASH), Reason: changed early")
+        XCTAssertEqual(podChange(ComponentReplacement(previous: .init(reason: .occlusion(code: nil)))).siteChangeNotes, "Pod Change (Omnipod DASH), Reason: occlusion")
+        XCTAssertEqual(podChange(ComponentReplacement(previous: .init(reason: .userInitiated))).siteChangeNotes, "Pod Change (Omnipod DASH), Reason: changed early")
     }
 
     func testSiteChangeNotesWithoutAReason() {

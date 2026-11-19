@@ -31,13 +31,13 @@ extension PersistedPumpEvent {
 
     var siteChangeNotes: String? {
         let reason: String?
-        switch componentReplacement?.reason {
+        switch componentReplacement?.previous?.reason {
         case .expired:
             reason = "expired"
-        case .fault:
-            reason = ["fault", componentReplacement?.faultCode].compactMap { $0 }.joined(separator: " ")
-        case .occlusion:
-            reason = "occlusion"
+        case .fault(let code):
+            reason = ["fault", code].compactMap { $0 }.joined(separator: " ")
+        case .occlusion(let code):
+            reason = ["occlusion", code].compactMap { $0 }.joined(separator: " ")
         case .userInitiated:
             reason = "changed early"
         case .unknown, nil:
