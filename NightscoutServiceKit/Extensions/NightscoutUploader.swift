@@ -11,18 +11,23 @@ import NightscoutKit
 
 extension NightscoutClient {
 
-    func createCarbData(_ data: [SyncCarbObject], completion: @escaping (Result<[String], Error>) -> Void) {
+    /// Completes with the syncIdentifier and objectId of each uploaded treatment
+    func createCarbData(_ data: [SyncCarbObject], completion: @escaping (Result<[(syncIdentifier: String?, objectId: String)], Error>) -> Void) {
         guard !data.isEmpty else {
             completion(.success([]))
             return
         }
 
-        upload(data.compactMap { $0.carbCorrectionNightscoutTreatment() }) { result in
+        let uploads = data.compactMap { carbEntry in
+            carbEntry.carbCorrectionNightscoutTreatment().map { (syncIdentifier: carbEntry.syncIdentifier, treatment: $0) }
+        }
+
+        upload(uploads.map { $0.treatment }) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let objectIds):
-                completion(.success(objectIds))
+                completion(.success(zip(uploads, objectIds).map { (syncIdentifier: $0.syncIdentifier, objectId: $1) }))
             }
         }
     }
@@ -117,7 +122,8 @@ extension NightscoutClient {
 
 extension NightscoutClient {
 
-    func createDoses(_ data: [DoseEntry], usingObjectIdCache objectIdCache: ObjectIdCache, completion: @escaping (Result<[String], Error>) -> Void) {
+    /// Completes with the syncIdentifier and objectId of each uploaded treatment; doses without a Nightscout treatment are not uploaded
+    func createDoses(_ data: [DoseEntry], usingObjectIdCache objectIdCache: ObjectIdCache, completion: @escaping (Result<[(syncIdentifier: String?, objectId: String)], Error>) -> Void) {
         guard !data.isEmpty else {
             completion(.success([]))
             return
@@ -125,23 +131,23 @@ extension NightscoutClient {
 
         let source = "loop://\(UIDevice.current.name)"
         
-        let treatments = data.compactMap { (dose) -> NightscoutTreatment? in
+        let uploads = data.compactMap { (dose) -> (syncIdentifier: String?, treatment: NightscoutTreatment)? in
             var objectId: String? = nil
             
             if let syncIdentifier = dose.syncIdentifier {
                 objectId = objectIdCache.findObjectIdBySyncIdentifier(syncIdentifier)
             }
             
-            return dose.treatment(enteredBy: source, withObjectId: objectId)
+            return dose.treatment(enteredBy: source, withObjectId: objectId).map { (syncIdentifier: dose.syncIdentifier, treatment: $0) }
         }
         
         
-        self.upload(treatments) { (result) in
+        self.upload(uploads.map { $0.treatment }) { (result) in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let objectIds):
-                completion(.success(objectIds))
+                completion(.success(zip(uploads, objectIds).map { (syncIdentifier: $0.syncIdentifier, objectId: $1) }))
             }
         }
     }

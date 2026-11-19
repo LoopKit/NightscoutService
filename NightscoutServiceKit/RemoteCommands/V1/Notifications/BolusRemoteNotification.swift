@@ -18,6 +18,8 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
     public let otp: String?
     public let enteredBy: String?
     public let encryptedReturnNotification: String?
+    /// Nightscout `_id` of the newest treatment the sender had seen
+    public let knownThroughId: String?
     
     enum CodingKeys: String, CodingKey {
         case remoteAddress = "remote-address"
@@ -27,13 +29,18 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
         case otp = "otp"
         case enteredBy = "entered-by"
         case encryptedReturnNotification = "encrypted_return_notification"
+        case knownThroughId = "known-through-id"
     }
     
     func toRemoteAction() -> Action {
-        return .bolusEntry(BolusAction(amountInUnits: amount))
+        return .bolusEntry(BolusAction(amountInUnits: amount, sentAt: sentAt, knownThroughId: knownThroughId))
     }
     
     func otpValidationRequired() -> Bool {
+        return true
+    }
+    
+    func sentAtRequired() -> Bool {
         return true
     }
     

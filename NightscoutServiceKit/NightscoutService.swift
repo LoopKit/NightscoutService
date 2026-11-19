@@ -31,9 +31,21 @@ public final class NightscoutService: Service {
 
     public weak var remoteDataServiceDelegate: RemoteDataServiceDelegate?
 
-    public var siteURL: URL?
+    public var siteURL: URL? {
+        didSet {
+            lockedUploader.value = nil
+            if let oldValue, oldValue != siteURL {
+                lockedObjectIdCache.value = ObjectIdCache()
+                stateDelegate?.pluginDidUpdateState(self)
+            }
+        }
+    }
 
-    public var apiSecret: String?
+    public var apiSecret: String? {
+        didSet {
+            lockedUploader.value = nil
+        }
+    }
     
     public var isOnboarded: Bool
 
@@ -53,19 +65,35 @@ public final class NightscoutService: Service {
     /// The last profile uploaded, without its dates, so an unchanged profile isn't uploaded again
     private let lastUploadedProfile: Locked<String?>
 
-    private var _uploader: NightscoutClient?
+    /// Created on first use for the current `siteURL` and `apiSecret`; reset when either changes
+    private let lockedUploader = Locked<NightscoutClient?>(nil)
 
-    private var uploader: NightscoutClient? {
-        if _uploader == nil {
-            guard let siteURL = siteURL, let apiSecret = apiSecret else {
-                return nil
+    var uploader: NightscoutClient? {
+        return lockedUploader.mutate { uploader in
+            if uploader == nil, let siteURL, let apiSecret {
+                uploader = NightscoutClient(siteURL: siteURL, apiSecret: apiSecret)
             }
-            _uploader = NightscoutClient(siteURL: siteURL, apiSecret: apiSecret)
         }
-        return _uploader
     }
     
     private let commandSourceV1: RemoteCommandSourceV1
+
+    private var _objectIdLookup: ObjectIdLookup?
+
+    var objectIdLookup: ObjectIdLookup? {
+        get {
+            if let _objectIdLookup {
+                return _objectIdLookup
+            }
+            guard let siteURL, let apiSecret else {
+                return nil
+            }
+            return NightscoutObjectIdLookup(siteURL: siteURL, apiSecret: apiSecret)
+        }
+        set {
+            _objectIdLookup = newValue
+        }
+    }
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -208,18 +236,14 @@ extension NightscoutService: RemoteDataService {
             return
         }
         
-        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+        let uploadedSyncIdentifiers = try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<[String], Error>) -> Void in
             uploader.createCarbData(created) { result in
                 switch result {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let syncIdentifiers = created.map { $0.syncIdentifier }
-                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
-                        if let syncIdentifier = syncIdentifier {
-                            self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
-                        }
-                    }
+                    let uploadedSyncIdentifiers = createdObjectIds.compactMap { $0.syncIdentifier }
+                    self.addObjectIds(createdObjectIds.compactMap { created in created.syncIdentifier.map { (syncIdentifier: $0, objectId: created.objectId) } }, from: uploader.siteURL)
                     self.stateDelegate?.pluginDidUpdateState(self)
 
                     uploader.updateCarbData(updated, usingObjectIdCache: self.objectIdCache) { result in
@@ -232,9 +256,9 @@ extension NightscoutService: RemoteDataService {
                                 case .failure(let error):
                                     continuation.resume(throwing: error)
                                 case .success:
-                                    self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
+                                    self.lockedObjectIdCache.mutate { $0.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime)) }
                                     self.stateDelegate?.pluginDidUpdateState(self)
-                                    continuation.resume()
+                                    continuation.resume(returning: uploadedSyncIdentifiers)
                                 }
                             }
                         }
@@ -242,6 +266,7 @@ extension NightscoutService: RemoteDataService {
                 }
             }
         })
+        await resolveMissingObjectIds(syncIdentifiers: uploadedSyncIdentifiers, from: uploader.siteURL)
     }
 
     public var doseDataLimit: Int? { return 1000 }
@@ -251,18 +276,14 @@ extension NightscoutService: RemoteDataService {
             return
         }
 
-        try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) -> Void in
+        let uploadedSyncIdentifiers = try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<[String], Error>) -> Void in
             uploader.createDoses(created, usingObjectIdCache: self.objectIdCache) { (result) in
                 switch (result) {
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 case .success(let createdObjectIds):
-                    let syncIdentifiers = created.map { $0.syncIdentifier }
-                    for (syncIdentifier, objectId) in zip(syncIdentifiers, createdObjectIds) {
-                        if let syncIdentifier = syncIdentifier {
-                            self.objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
-                        }
-                    }
+                    let uploadedSyncIdentifiers = createdObjectIds.compactMap { $0.syncIdentifier }
+                    self.addObjectIds(createdObjectIds.compactMap { created in created.syncIdentifier.map { (syncIdentifier: $0, objectId: created.objectId) } }, from: uploader.siteURL)
                     self.stateDelegate?.pluginDidUpdateState(self)
 
                     uploader.deleteDoses(deleted.filter { !$0.isMutable }, usingObjectIdCache: self.objectIdCache) { result in
@@ -270,14 +291,60 @@ extension NightscoutService: RemoteDataService {
                         case .failure(let error):
                             continuation.resume(throwing: error)
                         case .success:
-                            self.objectIdCache.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime))
+                            self.lockedObjectIdCache.mutate { $0.purge(before: Date().addingTimeInterval(-self.objectIdCacheKeepTime)) }
                             self.stateDelegate?.pluginDidUpdateState(self)
-                            continuation.resume()
+                            continuation.resume(returning: uploadedSyncIdentifiers)
                         }
                     }
                 }
             }
         })
+        await resolveMissingObjectIds(syncIdentifiers: uploadedSyncIdentifiers, from: uploader.siteURL)
+    }
+
+    /// Upper bound on Nightscout lookups after one upload
+    static let maxObjectIdLookups = 10
+
+    /// Stores objectIds received from `siteURL` when it is still the configured site; returns whether they were stored
+    @discardableResult
+    func addObjectIds(_ objectIds: [(syncIdentifier: String, objectId: String)], from siteURL: URL?) -> Bool {
+        var stored = false
+        lockedObjectIdCache.mutate { objectIdCache in
+            // A change of `siteURL` replaces the cache under this same lock
+            guard siteURL == self.siteURL else {
+                return
+            }
+            for (syncIdentifier, objectId) in objectIds {
+                objectIdCache.add(syncIdentifier: syncIdentifier, objectId: objectId)
+            }
+            stored = true
+        }
+        return stored
+    }
+
+    /// Looks up, on `siteURL`, the objectId of uploaded treatments whose upload response had none
+    func resolveMissingObjectIds(syncIdentifiers: [String], from siteURL: URL?) async {
+        let missing = syncIdentifiers.filter { syncIdentifier in
+            ObjectIdCache.creationTime(ofObjectId: objectIdCache.findObjectIdBySyncIdentifier(syncIdentifier) ?? "") == nil
+        }
+        guard !missing.isEmpty, siteURL == self.siteURL, let lookup = objectIdLookup else {
+            return
+        }
+        var resolved = false
+        for syncIdentifier in missing.prefix(Self.maxObjectIdLookups) {
+            do {
+                if let objectId = try await lookup.objectId(forSyncIdentifier: syncIdentifier) {
+                    if addObjectIds([(syncIdentifier: syncIdentifier, objectId: objectId)], from: siteURL) {
+                        resolved = true
+                    }
+                }
+            } catch {
+                log.error("Failed to look up objectId: %{public}@", String(describing: error))
+            }
+        }
+        if resolved {
+            stateDelegate?.pluginDidUpdateState(self)
+        }
     }
 
     public var dosingDecisionDataLimit: Int? { return 50 }  // Each can be up to 20K bytes of serialized JSON, target ~1M or less
@@ -536,7 +603,18 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                 
             case .bolusEntry(let bolusCommand):
                 commandType = .bolus
-                try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits, decisionId: nil)
+                let request = DoseMetadata.RemoteRequest(
+                    serviceIdentifier: pluginIdentifier,
+                    requestId: remoteNotification.id,
+                    requester: remoteNotification.enteredBy,
+                    requestedAt: bolusCommand.sentAt
+                )
+                try await self.serviceDelegate?.deliverRemoteBolus(
+                    amountInUnits: bolusCommand.amountInUnits,
+                    decisionId: nil,
+                    request: request,
+                    context: remoteCommandContext(sentAt: bolusCommand.sentAt, knownThroughId: bolusCommand.knownThroughId)
+                )
                 success = true
                 message = String(format: "Bolus of %.2f units delivered successfully", bolusCommand.amountInUnits)
                 
@@ -546,13 +624,14 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                     amountInGrams: carbCommand.amountInGrams,
                     absorptionTime: carbCommand.absorptionTime,
                     foodType: carbCommand.foodType,
-                    startDate: carbCommand.startDate
+                    startDate: carbCommand.startDate,
+                    context: remoteCommandContext(sentAt: carbCommand.sentAt, knownThroughId: carbCommand.knownThroughId)
                 )
                 success = true
                 message = String(format: "Carbs entry of %.1f g delivered successfully", carbCommand.amountInGrams)
             }
         } catch {
-            message = "Command failed: \(error.localizedDescription)"
+            message = Self.failureMessage(for: error)
             // Send failure response before rethrowing
             if let returnInfo = returnInfo {
                 await RemoteNotificationResponseManager.shared.sendResponseNotification(
@@ -574,6 +653,72 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                 message: message
             )
         }
+    }
+    
+    func commandSourceV1(_: RemoteCommandSourceV1, validationError error: Error, remoteNotification: RemoteNotification) async {
+        guard let returnInfo = remoteNotification.getReturnNotificationInfo() else {
+            return
+        }
+        guard let message = Self.validationFailureMessage(for: error) else {
+            log.default("No reply to a command with a password already used")
+            return
+        }
+        await RemoteNotificationResponseManager.shared.sendResponseNotification(
+            to: returnInfo,
+            commandType: Self.commandType(for: remoteNotification.toRemoteAction()),
+            success: false,
+            message: message
+        )
+    }
+
+    /// A rejection's reply text is the whole reply, worded the same as Trio's
+    static func failureMessage(for error: Error) -> String {
+        if let rejection = error as? RemoteCommandRejection {
+            return rejection.replyText
+        }
+        return "Command failed: \(error.localizedDescription)"
+    }
+
+    /// Password errors get a generic reply that does not repeat the password. A password already used gets no reply,
+    /// as it is the same command delivered again and the sender already has the reply to the first delivery.
+    static func validationFailureMessage(for error: Error) -> String? {
+        if case .previouslyUsed = error as? OTPManager.OTPValidationError {
+            return nil
+        }
+        if error is OTPManager.OTPValidationError {
+            return passwordNotAcceptedMessage
+        }
+        if case .missingOTP = error as? RemoteCommandValidator.NotificationValidationError {
+            return passwordNotAcceptedMessage
+        }
+        return failureMessage(for: error)
+    }
+
+    static let passwordNotAcceptedMessage = "Command failed: The password was not accepted."
+
+    static func commandType(for action: Action) -> RemoteNotificationResponseManager.CommandType {
+        switch action {
+        case .temporaryScheduleOverride:
+            return .override
+        case .cancelTemporaryOverride:
+            return .cancelOverride
+        case .bolusEntry:
+            return .bolus
+        case .carbsEntry:
+            return .carbs
+        }
+    }
+
+    /// Known treatments are included only when treatments are uploaded and `knownThroughId` is a plausible ObjectId.
+    func remoteCommandContext(sentAt: Date?, knownThroughId: String?) -> RemoteCommandContext? {
+        guard let sentAt else {
+            return nil
+        }
+        var knownTreatments: RemoteCommandContext.KnownTreatments?
+        if hasConfiguration, let knownThroughId {
+            knownTreatments = objectIdCache.knownTreatments(throughObjectId: knownThroughId)
+        }
+        return RemoteCommandContext(sentAt: sentAt, knownTreatments: knownTreatments)
     }
     
     func commandSourceV1(_: RemoteCommandSourceV1, uploadError error: Error, notification: [String: AnyObject]) async throws {

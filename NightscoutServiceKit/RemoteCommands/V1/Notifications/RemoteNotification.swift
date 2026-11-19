@@ -22,12 +22,17 @@ protocol RemoteNotification: Codable {
     
     func toRemoteAction() -> Action
     func otpValidationRequired() -> Bool
+    func sentAtRequired() -> Bool
     func getReturnNotificationInfo() -> ReturnNotificationInfo?
     
     static func includedInNotification(_ notification: [String: Any]) -> Bool
 }
 
 extension RemoteNotification {
+    
+    func sentAtRequired() -> Bool {
+        return false
+    }
     
     var id: String {
         //There is no unique identifier so we use the sent date when available

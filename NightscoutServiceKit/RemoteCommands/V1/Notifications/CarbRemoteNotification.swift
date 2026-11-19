@@ -21,6 +21,8 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
     public let otp: String?
     public let enteredBy: String?
     public let encryptedReturnNotification: String?
+    /// Nightscout `_id` of the newest treatment the sender had seen
+    public let knownThroughId: String?
 
     enum CodingKeys: String, CodingKey {
         case remoteAddress = "remote-address"
@@ -33,6 +35,7 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
         case otp = "otp"
         case enteredBy = "entered-by"
         case encryptedReturnNotification = "encrypted_return_notification"
+        case knownThroughId = "known-through-id"
     }
     
     public func absorptionTime() -> TimeInterval? {
@@ -43,11 +46,15 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
     }
     
     func toRemoteAction() -> Action {
-        let action = CarbAction(amountInGrams: amount, absorptionTime: absorptionTime(), foodType: foodType, startDate: startDate)
+        let action = CarbAction(amountInGrams: amount, absorptionTime: absorptionTime(), foodType: foodType, startDate: startDate, sentAt: sentAt, knownThroughId: knownThroughId)
         return .carbsEntry(action)
     }
     
     func otpValidationRequired() -> Bool {
+        return true
+    }
+    
+    func sentAtRequired() -> Bool {
         return true
     }
     
