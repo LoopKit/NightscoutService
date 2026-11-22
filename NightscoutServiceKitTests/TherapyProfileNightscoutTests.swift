@@ -535,6 +535,18 @@ final class TherapyProfileNightscoutTests: XCTestCase {
         XCTAssertTrue(imported.skippedProfiles.first?.reason.hasSuffix("Default gets the values of Sport.") ?? false, imported.skippedProfiles.first?.reason ?? "")
     }
 
+    func testRestoreDropsAGlucoseSafetyLimitOutsideItsGuardrail() throws {
+        var raw = try XCTUnwrap(settings(date: Date(), active: "Sport", profiles: profiles).profileSet).dictionaryRepresentation
+        var loopSettings = try XCTUnwrap(raw["loopSettings"] as? [String: Any])
+        loopSettings["minimumBGGuard"] = 75
+        raw["loopSettings"] = loopSettings
+        raw["units"] = "mmol/L"
+        raw["_id"] = "x"
+        let imported = try XCTUnwrap(ProfileSet(rawValue: raw)?.importedTherapySettings)
+        XCTAssertNil(imported.therapySettings.suspendThreshold)
+        XCTAssertEqual(imported.therapySettings.therapyProfiles?.map(\.name), ["Default", "Sport"])
+    }
+
     func testRestoreWithDefaultOnlyCarriesNoProfiles() throws {
         let profileSet = try XCTUnwrap(settings(date: Date(), active: nil, profiles: []).profileSet)
         let therapySettings = try XCTUnwrap(profileSet.importedTherapySettings?.therapySettings)

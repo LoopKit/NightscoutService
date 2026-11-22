@@ -138,7 +138,10 @@ extension ProfileSet {
             dailyItems: profile.carbratio.map { RepeatingScheduleValue(startTime: $0.offset, value: $0.value) },
             timeZone: profile.timeZone)
 
-        let suspendThreshold = settings?.minimumBGGuard.map { GlucoseThreshold(unit: settingsGlucoseUnit, value: $0) }
+        // A glucose safety limit outside its guardrail, such as one left in mg/dL after the units changed, is dropped.
+        let suspendThreshold = settings?.minimumBGGuard
+            .map { GlucoseThreshold(unit: settingsGlucoseUnit, value: $0) }
+            .flatMap { Guardrail.suspendThreshold.absoluteBounds.contains($0.quantity) ? $0 : nil }
 
         // The active profile becomes the live settings, so it passes the same checks as every other profile or
         // nothing is imported. A schedule that can not be built fails them.
