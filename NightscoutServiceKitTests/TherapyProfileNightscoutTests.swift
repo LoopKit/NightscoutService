@@ -504,6 +504,23 @@ final class TherapyProfileNightscoutTests: XCTestCase {
         XCTAssertEqual(imported.skippedProfiles, [])
     }
 
+    func testRestoreWithoutADefaultEntryMakesDefaultFromTheActiveProfile() throws {
+        var raw = try XCTUnwrap(settings(date: Date(), active: "Sport", profiles: profiles).profileSet).dictionaryRepresentation
+        let store = try XCTUnwrap(raw["store"] as? [String: Any])
+        raw["store"] = ["Weekday": try XCTUnwrap(store["Sport"]), "Weekend": try XCTUnwrap(store["Default"])]
+        raw["defaultProfile"] = "Weekday"
+        raw["_id"] = "x"
+        let therapySettings = try XCTUnwrap(ProfileSet(rawValue: raw)?.importedTherapySettings?.therapySettings)
+        XCTAssertEqual(therapySettings.therapyProfiles?.map(\.name), ["Default", "Weekday", "Weekend"])
+        XCTAssertEqual(therapySettings.activeProfileName, "Weekday")
+        XCTAssertEqual(therapySettings.therapyProfiles?[0].basalRateSchedule.items.map(\.value), [0.5])
+
+        raw["store"] = ["Weekday": try XCTUnwrap(store["Sport"])]
+        let single = try XCTUnwrap(ProfileSet(rawValue: raw)?.importedTherapySettings?.therapySettings)
+        XCTAssertEqual(single.therapyProfiles?.map(\.name), ["Default", "Weekday"])
+        XCTAssertEqual(single.activeProfileName, "Weekday")
+    }
+
     func testRestoreWithDefaultOnlyCarriesNoProfiles() throws {
         let profileSet = try XCTUnwrap(settings(date: Date(), active: nil, profiles: []).profileSet)
         let therapySettings = try XCTUnwrap(profileSet.importedTherapySettings?.therapySettings)
