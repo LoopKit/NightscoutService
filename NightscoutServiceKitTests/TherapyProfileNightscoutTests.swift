@@ -521,6 +521,20 @@ final class TherapyProfileNightscoutTests: XCTestCase {
         XCTAssertEqual(single.activeProfileName, "Weekday")
     }
 
+    func testRestoreSaysDefaultIsMadeFromTheActiveProfileWhenTheStoredDefaultFails() throws {
+        var raw = try XCTUnwrap(settings(date: Date(), active: "Sport", profiles: profiles).profileSet).dictionaryRepresentation
+        var store = try XCTUnwrap(raw["store"] as? [String: Any])
+        var defaultEntry = try XCTUnwrap(store["Default"] as? [String: Any])
+        defaultEntry["sens"] = [["time": "00:00", "timeAsSeconds": 0, "value": 900]]
+        store["Default"] = defaultEntry
+        raw["store"] = store
+        raw["_id"] = "x"
+        let imported = try XCTUnwrap(ProfileSet(rawValue: raw)?.importedTherapySettings)
+        XCTAssertEqual(imported.therapySettings.therapyProfiles?.map(\.name), ["Default", "Sport"])
+        XCTAssertEqual(imported.skippedProfiles.map(\.name), ["Default"])
+        XCTAssertTrue(imported.skippedProfiles.first?.reason.hasSuffix("Default gets the values of Sport.") ?? false, imported.skippedProfiles.first?.reason ?? "")
+    }
+
     func testRestoreWithDefaultOnlyCarriesNoProfiles() throws {
         let profileSet = try XCTUnwrap(settings(date: Date(), active: nil, profiles: []).profileSet)
         let therapySettings = try XCTUnwrap(profileSet.importedTherapySettings?.therapySettings)

@@ -172,7 +172,11 @@ extension ProfileSet {
                 try TherapyProfileValidator.validateValues(of: storedProfile, suspendThreshold: suspendThreshold)
                 profiles.append(storedProfile)
             } catch {
-                skippedProfiles.append(.init(name: name, reason: error.localizedDescription))
+                var reason = error.localizedDescription
+                if name == TherapyProfile.defaultName {
+                    reason += " " + String(format: LocalizedString("%1$@ gets the values of %2$@.", comment: "Nightscout profile import: the stored Default is left out and made from the active profile (1: Default, 2: active profile name)"), TherapyProfile.defaultName, activeName)
+                }
+                skippedProfiles.append(.init(name: name, reason: reason))
             }
         }
         let therapyProfiles = TherapyProfiles.resolved(profiles, activeProfileName: activeName, live: activeProfile)

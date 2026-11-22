@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%1$@ gets the values of %2$@." : {
+      "comment" : "Nightscout profile import: the stored Default is left out and made from the active profile (1: Default, 2: active profile name)"
+    },
     "%@ Activity" : {
       "comment" : "Name of an activity override (1: activity type name)"
     },
