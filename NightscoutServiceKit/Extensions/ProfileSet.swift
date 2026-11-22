@@ -175,7 +175,7 @@ extension ProfileSet {
                 skippedProfiles.append(.init(name: name, reason: error.localizedDescription))
             }
         }
-        let therapyProfiles = TherapyProfiles.resolved(profiles, live: activeProfile)
+        let therapyProfiles = TherapyProfiles.resolved(profiles, activeProfileName: activeName, live: activeProfile)
         let (scheduledSwitches, skippedScheduledSwitches) = importedScheduledSwitches(profileNames: therapyProfiles.map(\.name))
 
         let therapySettings = TherapySettings(
