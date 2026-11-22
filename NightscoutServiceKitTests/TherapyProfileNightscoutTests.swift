@@ -84,7 +84,7 @@ final class TherapyProfileNightscoutTests: XCTestCase {
         let limits = try XCTUnwrap(profileSet.dictionaryRepresentation["profileEditLimits"] as? [String: Any])
         XCTAssertEqual(limits["units"] as? String, "mg/dL")
         XCTAssertEqual(limits["maxBasal"] as? Double, 3)
-        XCTAssertEqual(limits["basalRates"] as? [Double], [0, 0.05, 0.1, 3.0])
+        XCTAssertEqual(limits["basalRates"] as? [Double], [0.05, 0.1, 3.0])
         XCTAssertEqual(limits["maxSegments"] as? Int, 48)
         XCTAssertEqual(limits["segmentSeconds"] as? Int, 1800)
         XCTAssertEqual(limits["maxBasalSegments"] as? Int, 24)
