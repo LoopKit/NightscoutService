@@ -72,6 +72,7 @@
 		C1398D2227C434FB00416AD6 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1398D2127C434FB00416AD6 /* Data.swift */; };
 		C177C4522ABE2D9300911B56 /* PersistedCgmEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */; };
 		E7A1D0012F1B4A0E00A1B2C3 /* StoredWorkout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A1D0002F1B4A0E00A1B2C3 /* StoredWorkout.swift */; };
+		C0A1B2C3D4E5F60718293B02 /* PumpEventTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A1B2C3D4E5F60718293B01 /* PumpEventTreatmentTests.swift */; };
 		E7A1D0032F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */; };
 		C1B9ACF827DE987400857532 /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = C1B9ACF727DE987400857532 /* OneTimePassword */; };
 		C1C1349627DD35060097B5AD /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349527DD35060097B5AD /* LoopKit.framework */; };
@@ -211,6 +212,7 @@
 		C1398D2127C434FB00416AD6 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		C177C4512ABE2D8900911B56 /* PersistedCgmEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistedCgmEvent.swift; sourceTree = "<group>"; };
 		E7A1D0002F1B4A0E00A1B2C3 /* StoredWorkout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredWorkout.swift; sourceTree = "<group>"; };
+		C0A1B2C3D4E5F60718293B01 /* PumpEventTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpEventTreatmentTests.swift; sourceTree = "<group>"; };
 		E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTreatmentTests.swift; sourceTree = "<group>"; };
 		C1B9ACFF27DE9AD800857532 /* Crypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crypto.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1C1349527DD35060097B5AD /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -342,6 +344,7 @@
 				98A0E460E47723C898DFCB0B /* ProfileContentTests.swift */,
 				C3A1D7E42F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift */,
 				D05E1A042F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift */,
+				C0A1B2C3D4E5F60718293B01 /* PumpEventTreatmentTests.swift */,
 				E7A1D0022F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift */,
 			);
 			path = NightscoutServiceKitTests;
@@ -781,6 +784,7 @@
 				70FF0FC9AA94F041D23350F9 /* ProfileContentTests.swift in Sources */,
 				C3A1D7E52F1B4A0E00A1B2C3 /* OverrideTreatmentTests.swift in Sources */,
 				D05E1A052F1B4A0E00A1B2C3 /* DoseTreatmentTests.swift in Sources */,
+				C0A1B2C3D4E5F60718293B02 /* PumpEventTreatmentTests.swift in Sources */,
 				E7A1D0032F1B4A0E00A1B2C3 /* WorkoutTreatmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
